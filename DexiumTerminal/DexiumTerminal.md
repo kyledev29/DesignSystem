@@ -11,14 +11,22 @@ Audience: AI coding agents and human developers implementing UI with Dexium Term
 
 This document is the single source of truth for visual and interaction design in any project adopting **Dexium Terminal**. It is written so an AI agent can implement any screen without guessing, regardless of which specific product or domain it is applied to.
 
+This document contains two layers, and both are binding, but they answer different questions:
+
+- **Visual intent** (Sections 1–6, 8–12): what the interface should look and feel like, and why — the design philosophy, tokens, typography, layout values, primitives, component descriptions, voice, states, accessibility, and anti-patterns.
+- **Implementation contract** (Section 7, plus the specific rendering-technique language embedded in Section 6's component rules): exactly *how* to render that intent when more than one technique could plausibly produce something that matches the visual description — which CSS layout mechanism to use, how columns are sized, what happens when content overflows, what gets sacrificed first on a small screen, which component owns a shared piece of chrome, and how to resolve it when two rules seem to disagree.
+
+Two independent implementations that both satisfy the visual-intent layer can still look and behave differently from each other if the implementation-contract layer is left to individual judgment — that gap is what Section 7 exists to close. Read Section 7 before implementing any layout, table, grid, or responsive behavior; treat "it looks right" as necessary but not sufficient — it must also be built the specified way, using the specified default technique, so that another agent building the same screen from this same document converges on the same markup and the same computed values, not merely a similar impression.
+
 Rules for using this spec:
 
-1. If a rule exists in this document, follow it exactly. Do not substitute a "close enough" value.
-2. If a component you need is not defined here, do not invent a new visual language. Instead, compose it from existing primitives in **Section 5 (Primitives)** and follow the **Section 12 (Decision Rules for Undefined Cases)** procedure.
-3. Never introduce a new color, font, radius, or shadow value that is not listed in Section 2 (Design Tokens). If a new semantic need appears (e.g. a new status), map it to the closest existing semantic token per Section 12.
+1. If a rule exists in this document, follow it exactly. Do not substitute a "close enough" value. This includes implementation-contract rules (Section 7) as much as visual-intent rules — a technically-different implementation that "looks the same" is still a spec violation if Section 7 named a specific required technique.
+2. If a component you need is not defined here, do not invent a new visual language. Instead, compose it from existing primitives in **Section 5 (Primitives)**, apply the general rendering defaults in **Section 7 (Implementation Contracts)**, and follow the **Section 13 (Decision Rules for Undefined Cases)** procedure.
+3. Never introduce a new color, font, radius, or shadow value that is not listed in Section 2 (Design Tokens). If a new semantic need appears (e.g. a new status), map it to the closest existing semantic token per Section 13.
 4. This system has no dark/light mode toggle. Theme is resolved automatically from the user's OS/browser preference (`prefers-color-scheme`). Never render a manual theme switcher control anywhere in the product. See Section 1.3.
 5. All numeric, technical, and pricing data must use the monospace font family. This is not optional styling — it is a semantic rule (Section 3.4).
 6. When in doubt between "more minimal" and "more decorated," choose more minimal. This system's failure mode is over-decoration, not under-decoration.
+7. When in doubt between two ways of *building* something that would look identical, prefer whichever technique Section 7 names explicitly; if neither is named, prefer whichever technique produces the same computed output regardless of container-measurement timing, font-loading order, or browser quirks (fixed values over measured/inferred ones) — determinism beats elegance when the two trade off.
 
 ---
 
@@ -180,8 +188,8 @@ Use an 4px-based scale. Only use values from this list for padding, margin, and 
 - **Max content width**: `1180px`, centered, with `28px` horizontal padding on the container (`16px` on mobile, see 4.4).
 - **Page vertical rhythm**: top padding under sticky header `56px`; bottom page padding `120px`; spacing between major `<section>` blocks `72px`.
 - **Section internal header**: every major section has a `section-head` consisting of an uppercase `eyebrow`/`h4`-styled label on the left and an optional mono metadata string on the right, separated from content below by `20px` margin and sitting on a `1px solid --border` bottom rule with `12px` padding-bottom before the rule.
-- **Two-column filter+content layout** (used for comparison browsing pages): left filter column fixed at `240px`, right content column `1fr`, gap `24px`. Filter column is `position: sticky` with `top` equal to the sticky top-bar height (`~76px`; recompute if top bar height changes). Collapses to single column (filter panel above content, no longer sticky) below `860px` viewport width.
-- **Card grids**: default to a 3-column grid (`repeat(3, 1fr)`, gap `16px`) for spec/product cards on desktop. Reduce to 2 columns below `~1024px`, 1 column below `~640px`.
+- **Two-column filter+content layout** (used for comparison browsing pages): left filter column fixed at `240px`, right content column `1fr`, gap `24px`. Filter column is `position: sticky` with `top: 76px`. This value is not approximate and is not "recomputed" per page: `76px` is derived from the top bar's fixed padding (`14px` × 2) plus its content line-height at the specified type size (Section 6.1), and every implementation must use this exact value rather than measuring the rendered top bar at runtime. If a future project genuinely changes the top bar's vertical padding, this document must be amended with the new computed value — implementers never derive their own. Collapses to single column (filter panel above content, no longer sticky) below `860px` viewport width; `860px` is an exact breakpoint, not an approximation.
+- **Card grids**: default to a 3-column grid (`repeat(3, 1fr)`, gap `16px`) for spec/product cards on desktop. Reduce to 2 columns below `1024px`, 1 column below `640px`. These two breakpoints are exact and match the Desktop/Tablet/Mobile breakpoints in Section 4.4 — do not pick a different card-grid breakpoint than the global responsive breakpoints for any reason.
 
 ### 4.3 Radius scale
 
@@ -207,7 +215,7 @@ At all breakpoints, the top bar remains sticky and single-row. If top bar conten
 
 ## 5. Primitives
 
-These are the atomic visual units every higher-level component is built from. When a new component is needed and not explicitly defined in Section 6, compose it from these primitives per Section 12.
+These are the atomic visual units every higher-level component is built from. When a new component is needed and not explicitly defined in Section 6, compose it from these primitives per Section 13.
 
 ### 5.1 Surfaces
 
@@ -233,7 +241,7 @@ These are the atomic visual units every higher-level component is built from. Wh
 - Standard transition timing: `150ms` for micro-interactions (hover, focus, button press), `200ms` for layout-affecting transitions (panel open/close, dropdown reveal).
 - Easing: `cubic-bezier(0.4, 0, 0.2, 1)` for all transitions (standard "ease" curve). Do not use bounce, elastic, or spring easings anywhere in the system.
 - Permitted animated properties: `background-color`, `border-color`, `color`, `opacity`, `transform` (limited to `translateY` of 1–2px on hover for cards/buttons, and rotation of chevrons on expand/collapse).
-- Do not animate `box-shadow` size/blur (shadows are near-static per Section 2.4), do not use parallax, do not use auto-playing decorative animations, do not use confetti/celebratory animation, do not use skeleton shimmer beyond a simple opacity pulse for loading states (Section 9.4).
+- Do not animate `box-shadow` size/blur (shadows are near-static per Section 2.4), do not use parallax, do not use auto-playing decorative animations, do not use confetti/celebratory animation, do not use skeleton shimmer beyond a simple opacity pulse for loading states (Section 10.4).
 - Respect `prefers-reduced-motion: reduce`: when set, disable all transform/translate hover effects and reduce all transition durations to `0ms` (state changes should be instant, not merely faster).
 
 ---
@@ -243,7 +251,7 @@ These are the atomic visual units every higher-level component is built from. Wh
 ### 6.1 Top bar
 
 - Fixed/sticky at `top: 0`, `z-index: 50`.
-- Height driven by content: `14px` vertical padding, `28px` horizontal padding (matches container padding).
+- Height: exactly `76px` total (this is the fixed value referenced throughout this document — Section 4.2's sticky filter offset, Section 6.3's sticky table header offset). Achieved via `14px` vertical padding, `28px` horizontal padding (matches container padding), around content whose line-height brings the total to `76px`; implementations must set `height: 76px` explicitly on the top bar container rather than letting it float to whatever the padding-plus-content total happens to compute to, so the value cannot drift if a font, weight, or padding value is later adjusted on this element without a corresponding spec change.
 - Background: `--bg` (flush with page). Bottom border: `1px solid --border`. No shadow.
 - Left: brand lockup — a small `8px` square status-dot in `--accent` (this is the one exception to "no circular/pill shapes" being about buttons/badges; the dot itself is a small square with `--radius-sm`-equivalent 2px corner, not circular — keep it square to match the "sharp" system, do not round it into a circle) followed by the wordmark in `h4`-equivalent weight (700) at `15px`, tight letter-spacing (`-0.01em`), plus an optional small mono tag chip (`11px` mono, `1px solid --border`, `2px 6px` padding, `--radius-sm`) for contextual labels like a section name.
 - Right: primary navigation and/or search entry point and/or primary account action. **Do not place a theme toggle here or anywhere else** (Section 1.3).
@@ -273,15 +281,22 @@ Rules:
 This is the single most important component in the product. Structure:
 
 - Outer wrapper `table-card`: `--bg-raised` background, `1px solid --border`, `--radius-lg`, `overflow: hidden`.
-- `<thead>` cells: background `--bg-inset`, text `eyebrow`-style (uppercase, `11px`, `700` weight, `0.06em` letter-spacing, `--text-tertiary`), `14px 16px` padding, bottom border `1px solid --border`, `position: sticky` with `top` matching the top bar height so headers remain visible while scrolling a long table.
+- `<thead>` cells: background `--bg-inset`, text `eyebrow`-style (uppercase, `11px`, `700` weight, `0.06em` letter-spacing, `--text-tertiary`), `14px 16px` padding, bottom border `1px solid --border`, `position: sticky` with `top: 76px` (the exact top bar height per Section 6.1) so headers remain visible while scrolling a long table. If the table is rendered inside the two-column filter+content layout (Section 4.2), this is the same `76px` value, not an additive offset — the filter column and the table header stick to the same horizontal line.
 - `<tbody>` cells: `16px` padding, `body-sm` (13.5px) size, bottom border `1px solid --border`, last row has no bottom border.
 - Row hover: background shifts to `--bg-inset`, transition `120ms`.
 - **First column convention**: the leading/identity column (provider, package, service name) renders as a `service-cell`: a `28px × 28px` logo/initials square (`--bg-inset` background, `1px solid --border`, `--radius-sm`, centered bold initials at `12px` in `--text-secondary`) plus a stacked name block (`service-name`: `600` weight, `13.5px`, `--text-primary`; optional `service-sub`: `11.5px`, `--text-tertiary`, e.g. plan/tier name).
-- **Numeric/spec columns**: always rendered in mono (`data` scale, Section 3.4). Choose one alignment (left or right) per table and apply consistently to all numeric columns in that table; do not mix alignment within a single table.
-- **"Best value" row**: exactly one row per table may be marked as the standout/winning option using the `row-best` treatment: a `3px` solid `--accent` bar on the left inner edge of the first cell (implemented as a pseudo-element or inset box-shadow, not by adding a visible 4th table column), and the specific winning metric's cell(s) additionally styled per the "best value cell" rule below. Do not mark more than one row as best per table — if several rows tie, pick the single most relevant metric to break the tie, or omit the best-row treatment entirely rather than doubling it.
-- **"Best value" cell** (independent of whether the row is the overall winner): the single best numeric value in a comparison column (e.g. lowest price, highest uptime) is styled with `color: --good` and `font-weight: 600`, keeping the same mono font/size as sibling cells in that column. Do not apply this to every "good-ish" value — only the single best cell per column, per table, so the signal stays meaningful.
+- **Numeric/spec columns**: always rendered in mono (`data` scale, Section 3.4). All numeric columns in a given table are **right-aligned**. This is a fixed rule, not a per-table choice: right-alignment is what makes digit stacks and decimal points scan as a column, and giving implementers a left/right choice is exactly the kind of open decision that produces divergent output from an identical spec. The identity column (Section 6.3) and any plain-text/label columns remain left-aligned.
+- **Column sizing algorithm (deterministic, do not substitute another strategy)**: table layout is `table-layout: fixed`. Column widths are assigned in this fixed order and never any other way:
+  1. Identity column: `280px` on desktop (≥1024px), `220px` on tablet (640–1023px). This width does not vary with content.
+  2. Any boolean/badge column (Section 6.3 "Boolean/inclusion columns"): `120px` fixed.
+  3. All remaining numeric/spec columns split the leftover width equally (`1fr` each), with a `96px` minimum (`min-width: 96px`) per column enforced via the table's `<colgroup>`, not via cell-level CSS.
+  4. If the sum of minimums exceeds the container width, the table does not shrink columns further or wrap cell content to multiple lines — it triggers the horizontal-scroll behavior in this section's "Mobile behavior" bullet, at whatever breakpoint the overflow first occurs (this can happen above 640px on tables with many columns; the 640px breakpoint is the *guaranteed* scroll point, not the only one).
+  - Do not use `auto` table layout, do not use JavaScript-measured "fit content" sizing, and do not use CSS Grid for this component — `table-layout: fixed` with the widths above is the only permitted implementation, because it is the only one of the three that produces byte-identical column widths across independent implementations of the same dataset.
+- **Cell content overflow**: every table cell (identity, numeric, badge) is single-line. Apply `white-space: nowrap; overflow: hidden; text-overflow: ellipsis` to the cell's text content. Do not wrap cell text to multiple lines and do not increase row height to fit long values — truncate instead. Exception: the `service-sub` line in the identity cell (Section 6.3) may wrap only if it would otherwise force the primary `service-name` line to truncate; `service-name` itself never wraps or truncates before `service-sub` does (i.e. `service-sub` absorbs the overflow first). For truncated numeric or identity values, add a native `title` attribute with the full untruncated value so it is recoverable on hover/long-press; do not build a custom tooltip component for this.
+- **"Best value" row**: exactly one row per table may be marked as the standout/winning option using the `row-best` treatment: a `3px` solid `--accent` bar on the left inner edge of the first cell (implemented as a pseudo-element or inset box-shadow, not by adding a visible 4th table column), and the specific winning metric's cell(s) additionally styled per the "best value cell" rule below. Do not mark more than one row as best per table. **Tie-break rule**: the "best" designation is driven by exactly one column, chosen by the content author/data source (not the implementer) and passed to the component as an explicit `bestValueColumn` parameter — the component itself never infers which metric matters most. If the data source does not supply a `bestValueColumn`, the component renders the table with no `row-best` treatment at all (no best-row indicator, no per-cell "best value" styling anywhere in the table); it must not guess a metric on its own. If two or more rows are exactly equal on the designated `bestValueColumn`, omit the `row-best` treatment entirely rather than marking either row.
+- **"Best value" cell** (independent of whether the row is the overall winner): the single best numeric value in a comparison column (e.g. lowest price, highest uptime) is styled with `color: --good` and `font-weight: 600`, keeping the same mono font/size as sibling cells in that column. Do not apply this to every "good-ish" value — only the single best cell per column, per table, so the signal stays meaningful. **Tie-break**: this rule applies per numeric column independently of the row-level designation above — if two or more values in one column are exactly equal for "best" (e.g. two providers both at the lowest price), no cell in that column gets the best-value treatment for that comparison. Ties suppress the signal; they never duplicate it.
 - **Boolean/inclusion columns** (e.g. "Free tier", "IPv6 support"): render as a badge (Section 6.5) using `badge-good`/`check-good` for true and `badge-bad`/`check-bad` for false — never a bare "Yes"/"No" text string without the badge treatment, since the badge's color is what makes the table scannable at a glance.
-- **Mobile behavior**: below `640px`, do not reflow columns into stacked cards by default — instead make the `table-card` horizontally scrollable (`overflow-x: auto`) with the first (identity) column optionally sticky to the left edge if the table library/framework in use supports sticky columns; if it does not, a plain horizontal scroll is acceptable. Only convert to a stacked-card layout per row if a specific page explicitly requires it; this is a deviation from default and should be a deliberate choice, not the automatic mobile fallback.
+- **Mobile behavior**: below `640px` (and at any wider viewport where columns overflow per the sizing algorithm above), do not reflow columns into stacked cards by default — instead make the `table-card` horizontally scrollable (`overflow-x: auto`) with the identity column set to `position: sticky; left: 0` with a solid `--bg-raised` background (not transparent, so scrolling numeric columns don't show through underneath it) and a `1px solid --border` right edge to visually separate it from the scrolling region. This sticky-identity-column behavior is a CSS-only requirement (`position: sticky` is supported by every browser this system targets) — it is never conditional on "framework support," and it is not optional. Only convert to a stacked-card layout per row if a specific page explicitly requires it; this is a deviation from default and should be a deliberate choice, not the automatic mobile fallback.
 
 ### 6.4 Spec cards
 
@@ -292,7 +307,7 @@ Used for single-product detail summaries (e.g. an email API's card, a VPS plan's
 - Title block: product name in `h3` (21px/600), immediately followed by a `tagline` in `12.5px`, `--text-tertiary`, `16px` bottom margin before the price.
 - Price block (`price-tag`): mono `amount` at `data-lg` (26px/700) immediately followed by a `period` string (e.g. "/ 3k emails/mo") at `12.5px`, `--text-tertiary`, baseline-aligned, `16px` bottom margin.
 - Spec list (`spec-list`): vertical stack of `spec-row` items, each a flex row with a `k` (key) label in `--text-tertiary` body-sm on the left and a `v` (value) in mono `data` weight `500` on the right, separated by a `1px dashed --border` bottom border (last item has none), `9px` vertical padding rhythm, `18px` bottom margin before the card's closing action.
-- Closing action: typically a full-width Secondary small button ("View full spec" or similar), `width: 100%`, centered content.
+- Closing action: a full-width Secondary small button ("View full spec" or similar), `width: 100%`, centered content. This is the default and only pattern for a spec card's closing action; a card either includes this button or omits the closing action entirely (no button) — do not substitute a text link, icon-only button, or any other control in this slot.
 - Card grid spacing and breakpoints per Section 4.2.
 
 ### 6.5 Badges
@@ -304,7 +319,7 @@ Used for single-product detail summaries (e.g. an email API's card, a VPS plan's
   - `badge-warn`: background `--warn-bg`, text `--warn`. Use for: price change, partial/limited support, stale/unverified data, beta status.
   - `badge-neutral`: background `--bg-inset`, text `--text-secondary`, border `1px solid --border`. Use for: informational, non-judgmental tags (e.g. "Free tier" as a category label distinct from a pass/fail check, "Popular").
   - `badge-accent`: background `--accent-dim`, text `--accent-text`. Use for: editorial/curatorial calls that are not pass/fail judgments — "Editor's pick," "New," "Recommended."
-- Never invent a new badge color combination outside these five variants. If a new status concept appears, map it to the nearest of good/bad/warn/neutral/accent per Section 12 rather than introducing a sixth color.
+- Never invent a new badge color combination outside these five variants. If a new status concept appears, map it to the nearest of good/bad/warn/neutral/accent per Section 13 rather than introducing a sixth color.
 - Optional leading glyph: literal `✓` or `✕` characters (Section 5.3) may prefix the badge label text for boolean-style badges; omit the glyph for non-boolean badges (neutral/accent variants normally have no glyph).
 
 ### 6.6 Filter panel
@@ -313,13 +328,13 @@ Used for single-product detail summaries (e.g. an email API's card, a VPS plan's
 - Structure: a vertical stack of `filter-group` blocks, each with a `22px` bottom margin (last group has none).
 - Group heading: `11px`, uppercase, `0.06em` letter-spacing, `700` weight, `--text-tertiary`, `10px` bottom margin.
 - Checkbox filter option: a flex row, `space-between`, `6px` vertical padding, `13.5px` label in `--text-secondary` (hovers to `--text-primary`), with a right-aligned mono `count` in `11px`/`--text-tertiary` showing the number of matching results. Checkbox input uses `accent-color: var(--accent)` rather than a custom-built checkbox graphic, unless a specific page's framework requires a custom control — if so, the custom control must still resolve to an `--accent`-filled check state visually equivalent to the native `accent-color` rendering.
-- Range filter: a native or custom range/slider input with `accent-color: var(--accent)` (or accent-colored track/thumb if custom-built), paired with a min/max label row underneath in `caption`-equivalent mono/uppercase styling consistent with `type-sample-6` from the demo (12px, `--text-tertiary`, uppercase, `0.08em`).
+- Range filter: a native or custom range/slider input with `accent-color: var(--accent)` (or accent-colored track/thumb if custom-built), paired with a min/max label row underneath: `12px`, mono, `--text-tertiary`, uppercase, `0.08em` letter-spacing. This label styling is fully specified here; do not look to the reference HTML (Section 14) for any detail not stated in this bullet.
 - The filter panel never uses `--bg-inset`; it is a raised surface, not a recessed one, because it is an interactive control panel, not passive/dimmed content.
 
 ### 6.7 Form fields
 
 - Field wrapper: vertical flex, `6px` gap between label and input.
-- Label: `12px`, mono font, `--text-tertiary`, typically uppercase or sentence case consistent with nearby labels on the same page (pick one convention per page and apply it to every field label on that page).
+- Label: `12px`, mono font, `--text-tertiary`. **Default casing is uppercase** (`text-transform: uppercase`, `0.04em` letter-spacing), matching the eyebrow/filter-group-heading convention used everywhere else labels appear in this system (Sections 3.3, 6.6). Sentence case is permitted only if a specific page already has an established, documented reason to deviate (e.g. integrating into a pre-existing non-Dexium form on the same page) — absent such a documented reason, every implementation uses uppercase, full stop. This removes the previous per-page choice, which was a source of divergence between otherwise-identical forms.
 - Input/select: `--bg-inset` background, `1px solid --border`, `--radius-sm`, `10px 12px` padding, `13.5px` Inter (not mono — user-entered/selected values in inputs use the UI font; only the *displayed, already-resolved* data elsewhere in the product uses mono, per Section 3.4's distinction between "data being read" and "data being entered").
 - Focus state: border becomes `--accent`, plus `0 0 0 3px --accent-dim` box-shadow ring (Section 5.2).
 - Placeholder text color: `--text-tertiary`.
@@ -341,18 +356,83 @@ Used for single-product detail summaries (e.g. an email API's card, a VPS plan's
 
 ---
 
-## 7. Iconless Logo / Service Identity Convention
+## 7. Implementation Contracts (read this before implementing anything)
+
+Section 6 and the rest of this document describe **visual intent**: what a component should look like and communicate. This section describes **implementation contracts**: the specific rendering strategy an agent or developer must use whenever more than one technique could plausibly satisfy that intent. Sections 1–6 tell you what "correct" looks like; this section tells you which of several correct-looking techniques to actually write, so that two independent implementations of the same screen produce the same markup, the same computed widths, and the same behavior at every viewport — not just a similar impression.
+
+If anything in Section 6 states a rule and this section states a more specific technique for implementing that same rule, this section's technique wins for *how* to build it; Section 6 still wins for *what it should look like and communicate*. If the two ever appear to conflict outright (not just differ in detail level), that is a documentation defect — implement Section 6's visual intent using this section's default techniques, and flag the conflict per Section 13.7 rather than silently picking one side.
+
+### 7.1 Sizing strategy — default technique per layout situation
+
+Every layout in this system falls into exactly one of the following situations. Do not choose a sizing strategy by aesthetic preference; choose it by which situation applies.
+
+| Situation | Required technique | Never use |
+|---|---|---|
+| A row of columns where each column's content is a comparable, bounded fact across rows (tables) | `table-layout: fixed` with explicit pixel/`fr` widths assigned per Section 6.3's column-sizing algorithm | `table-layout: auto`, JS-measured "fit content," CSS Grid standing in for a table |
+| A fixed-count grid of self-contained units (card grids) | CSS Grid, `repeat(N, 1fr)`, with `N` and the gap fixed by Section 4.2 — never content-driven column count | `auto-fit`/`auto-fill` with `minmax()` (these produce a different column count depending on container width in a way this system does not define — see 7.1.1) |
+| A single fixed-width sidebar beside fluid content (filter+content layout) | CSS Grid or Flexbox with the sidebar at an explicit pixel width (`240px`) and content at `1fr` — per Section 4.2 | `flex-basis` percentages, `minmax(240px, 1fr)` on the sidebar track (this allows the sidebar to grow past 240px, which this layout never permits) |
+| A horizontal run of same-role controls that should share space evenly (form fields on one row, per Section 6.7) | Flexbox, `flex: 1` per item, fixed `min-width` per Section 6.7 | CSS Grid (adds a dimension of complexity this pattern doesn't need) |
+| A vertical stack of items whose count varies with data (spec-list rows, filter options, alert stacks) | Flexbox column, fixed `gap` from Section 4.1's spacing scale | Margin-based spacing (`margin-bottom` on every child except the last) — use `gap`, since it does not require a `:last-child` exception and cannot be doubled by accident |
+
+**7.1.1 Why `auto-fit`/`auto-fill` is disallowed for card grids:** these keywords make the resulting column count a function of the exact container width at render time, which means the same viewport width can legitimately produce a different column count depending on rounding, scrollbar width, or a few pixels of difference between two implementations' container padding. Section 4.2's fixed breakpoint-driven column counts (3 / 2 / 1) are deliberately chosen so that "how many columns at this viewport" has exactly one correct answer, checkable by reading a breakpoint table rather than by rendering and measuring.
+
+### 7.2 Alignment defaults
+
+- **Text**: left-aligned by default everywhere (Section 3.3). The complete list of exceptions is: numeric table columns (right-aligned, Section 6.3); the `price/period` pair and the `section-head`'s label-and-metadata pair (both baseline-aligned to each other, Sections 6.4 and 6.9 — "baseline-aligned" here means the two text runs share a text baseline, not that either is centered); a button's icon-and-label content (horizontally centered as a unit within the button's own bounds, Section 6.2 — this centers the control's content within itself, it does not center text within a page or section); and centered *empty-state message blocks* (Section 10.6). No other centered or baseline-aligned text exists in this system — any new component defaults to left-aligned text unless it matches one of these five named cases exactly.
+- **Flex/grid alignment**: rows that pair a label with a value (spec-list rows, filter checkbox options, key/value pairs generally) use `justify-content: space-between` with `align-items: center`, never `space-around` or `space-evenly`. Rows that pair an icon with text (alerts, badges with glyphs) use `align-items: flex-start` if the text can wrap to multiple lines, `align-items: center` if the text is guaranteed single-line — badges (always single-line, Section 6.5) use `center`; alerts (Section 6.8, text may wrap) use `flex-start` with the icon aligned to the first line as already specified.
+- **Vertical rhythm inside a component**: every component in Section 6 specifies its own internal margins between sub-parts (e.g. spec card's `16px` header margin, `16px` price margin). These are not additive suggestions — implement exactly the margin value given between exactly those two sub-parts, and do not also add default browser margin on the underlying elements (`h1`–`h4`, `p`) that would stack with the specified value. Zero out default heading/paragraph margins globally (a CSS reset or `margin: 0` on typographic elements) and apply only the spacing values this document specifies.
+
+### 7.3 Overflow and truncation — global default
+
+Unless a component's section states a different rule (the comparison table's cell truncation in Section 6.3 is the only override), the global default for any text content that might exceed its container is:
+
+1. First choice: let the container grow to fit the content (most UI text in this system — headings, body copy, card taglines — is not artificially height-constrained).
+2. If a fixed height or single-line constraint is explicitly specified for that element (badges, table cells, the `service-name` line, button labels), apply `white-space: nowrap; overflow: hidden; text-overflow: ellipsis` rather than allowing visual overflow (text spilling outside its container) or silently clipping without an ellipsis.
+3. Never use `-webkit-line-clamp` multi-line truncation anywhere in this system unless a future amendment explicitly introduces it for a named component — its absence from Section 6 is deliberate, not an oversight, since multi-line clamping tends to reflow unpredictably across fonts/zoom levels in a system that otherwise avoids relying on the browser's line-breaking to determine layout height.
+4. Long, unbreakable strings (URLs, hashes, long identifiers rendered as data per Section 3.4) get `word-break: break-all` only inside body text contexts, never inside single-line-constrained contexts (which truncate per point 2 instead).
+
+### 7.4 Responsive adaptation — priority order when space runs out
+
+When a component or layout must shed content to fit a smaller viewport, and Section 6 does not already give that component a specific mobile rule, resolve it in this fixed priority order (highest priority = last thing to be sacrificed):
+
+1. **Core data/content never disappears.** Prices, specs, statuses, and the identity of what's being compared are never hidden at any breakpoint — they may reflow, scroll, or shrink in font size within the type scale (Section 3.2), but not be removed from the DOM or `display: none`'d for space reasons.
+2. **Secondary navigation and chrome degrade before primary content.** Per Section 4.4's top bar rule, deprioritize/hide secondary nav items before shrinking the logo or search affordance — this same ordering (chrome before content) generalizes to any component: a card's optional status badge (Section 6.4) may be dropped at extreme widths before its price or spec list would ever be touched.
+3. **Layout reflows before content is removed.** Multi-column becomes single-column, sidebars stack above content, tables scroll horizontally — all before any content is hidden outright (this is why the comparison table scrolls rather than reflowing into cards by default, per Section 6.3).
+4. **Only as a last resort, and only if a specific page explicitly opts in, is content removed** (e.g. converting a table to per-row stacked cards on mobile, Section 6.3's explicitly-flagged deviation). This is never the automatic default for a new component — an agent implementing a new component under space pressure must exhaust priorities 1–3 before considering this one, and must treat reaching for it as a decision worth flagging (per Section 13.7) rather than a silent default.
+
+### 7.5 Component composition priorities
+
+When a screen needs to combine multiple Section 6 components and it's not obvious which one "owns" a shared piece of chrome (e.g. does the table or the page provide the section head above it?), resolve using these ownership rules:
+
+- **`section-head` (Section 6.9) always belongs to the page/screen composition, never to the component beneath it.** A comparison table, card grid, or filter panel never renders its own section head internally — the page places a `section-head` above the component and passes it the result count/metadata string. This keeps every component reusable in a context that doesn't want a section head (e.g. a table embedded inside a modal).
+- **The filter panel and its paired content component are siblings in a two-column grid (Section 4.2), never parent/child.** Do not implement the filter panel as a child of the comparison table or vice versa; both are independent components placed into the two-column layout primitive.
+- **Badges (Section 6.5) are always a leaf component rendered inside another component's cell/slot** — a badge never contains another component, and nothing renders "inside" a badge except its optional glyph and label text.
+- **Alerts (Section 6.8) are page/section-level, not row-level.** Do not render an alert inside a single table row or a single spec-card's spec-list; if a single row/item needs an inline warning, use a badge (Section 6.5) instead — alerts are reserved for messages about an entire component or the page, per the "do not nest alerts inside cards" rule already stated in 6.8.
+
+### 7.6 Conflict-resolution hierarchy
+
+When two rules in this document appear to genuinely conflict for a specific case (not merely under-specify it), resolve in this fixed order, and stop at the first rule that resolves the conflict:
+
+1. A more specific component rule (Section 6.x, 7.x) overrides a more general primitive or philosophy statement (Section 1, 5).
+2. A numeric/exact value anywhere in this document overrides a qualitative description anywhere else that seems to suggest a different value.
+3. Section 1.2's principle order (data legibility > structure-as-meaning > color restraint > flatness > mono/sans pairing > no unnecessary chrome) breaks ties between two visual treatments that are otherwise equally well-specified.
+4. Section 0, Rule 6 ("when in doubt between more minimal and more decorated, choose more minimal") breaks any remaining tie.
+5. If the conflict still isn't resolved after steps 1–4, it is a genuine gap in the spec: follow Section 13's Decision Rules for Undefined Cases, and note the conflict (per 13.7) rather than resolving it silently — a documented, flagged assumption is recoverable; a silent one is what causes divergent implementations.
+
+---
+
+## 8. Iconless Logo / Service Identity Convention
 
 In products that list many third-party entities (services, packages, vendors, companies) without reliably available brand assets, the default identity treatment is a **monogram square**, not a fetched brand logo, unless real logo assets are explicitly integrated:
 
 - Square background `--bg-inset`, `1px solid --border`, radius `--radius-sm`.
 - Centered 1–3 letter uppercase initials, `700` weight, Inter (not mono — initials are a label, not data), color `--text-secondary`.
 - Sizes: `28px` in table rows, `36px` in spec cards, `44px` if used in a larger featured/hero product callout.
-- If real logo image assets are available and approved for use, they replace the monogram inside the same square container (same size/border/radius), object-fit: contain, with a small internal padding (~15% of the square) so logos don't touch the edges. Do not stretch or crop logos edge-to-edge.
+- If real logo image assets are available and approved for use, they replace the monogram inside the same square container (same size/border/radius), `object-fit: contain`, with internal padding equal to `4px` at the `28px` table size, `5px` at the `36px` card size, and `6px` at the `44px` hero size (each proportionally close to, but a fixed pixel value rather than a percentage, so padding does not require runtime calculation). Do not stretch or crop logos edge-to-edge.
 
 ---
 
-## 8. Voice & Content Rules (applies to all UI copy)
+## 9. Voice & Content Rules (applies to all UI copy)
 
 Even though this is primarily a visual spec, copy is part of the design system because mismatched tone breaks the "dev tool" character as much as wrong colors would.
 
@@ -366,53 +446,53 @@ Even though this is primarily a visual spec, copy is part of the design system b
 
 ---
 
-## 9. States (must be defined for every interactive component)
+## 10. States (must be defined for every interactive component)
 
 Every interactive component built in this system must explicitly account for the following states. When implementing any new component, do not stop at the default/rest state.
 
-### 9.1 Hover
+### 10.1 Hover
 - Buttons: per Section 6.2 per-variant rules.
 - Table rows: background → `--bg-inset`.
 - Cards: border → `--border-strong`; optionally `translateY(-2px)` for spec cards specifically (not for table rows or filter options).
 - Links/inline text actions: color shifts from `--text-secondary`/`--text-primary` to `--accent-text`; underline optional but recommended for inline links within body copy (not for nav links).
 
-### 9.2 Focus (keyboard)
+### 10.2 Focus (keyboard)
 - Every focusable element must show a visible focus ring: `1px solid --accent` border/outline plus `0 0 0 3px --accent-dim` box-shadow, per Section 5.2.
 - Never remove focus outlines (`outline: none`) without supplying this equivalent replacement.
 - Focus order must follow visual/DOM order; do not reorder tab sequence to "fix" a layout without also fixing the underlying DOM order.
 
-### 9.3 Active / pressed
+### 10.3 Active / pressed
 - Buttons: on `:active`, remove the hover `translateY` lift (return to `translateY(0)`) and reduce `filter: brightness` slightly below the hover value (e.g. `brightness(0.96)` on Primary) to give tactile press feedback.
 
-### 9.4 Loading
+### 10.4 Loading
 - Inline loading (e.g. a table refreshing filtered results): reduce content opacity to `0.5` and disable pointer events on the affected region; do not replace with a full-page spinner for partial updates.
 - Skeleton loading (initial page/table load): flat rectangular placeholders using `--bg-inset` background with a subtle opacity pulse animation (`0.6` ↔ `1`, `1.2s` ease-in-out infinite) — same radius as the content they replace (e.g. `--radius-sm` for table cells, `--radius-lg` for cards). Do not use shimmer/gradient-sweep skeletons.
 - Button loading state: replace label with a small inline spinner (simple rotating arc, `--accent` on Primary buttons, current text color on Secondary/Ghost) and disable the button; keep button width stable (do not let it shrink to fit just the spinner).
 
-### 9.5 Disabled
+### 10.5 Disabled
 - `opacity: 0.45`, `cursor: not-allowed`, all hover/focus/active visual changes suppressed.
 - Disabled form fields additionally get `background: --bg` (not `--bg-inset`) to visually flatten them further against the inset norm.
 
-### 9.6 Empty
-- Empty states (no results, no data yet) render inside the same container type the content would have used (e.g. an empty comparison table still renders the `table-card` wrapper) with a centered message block: a short bold statement (`h4` scale) plus a `body-sm` supporting line and, where actionable, a Secondary button to resolve it (e.g. "Clear filters"). Follow the voice rules in Section 8.
+### 10.6 Empty
+- Empty states (no results, no data yet) render inside the same container type the content would have used (e.g. an empty comparison table still renders the `table-card` wrapper) with a centered message block: a short bold statement (`h4` scale) plus a `body-sm` supporting line and, where actionable, a Secondary button to resolve it (e.g. "Clear filters"). Follow the voice rules in Section 9.
 
-### 9.7 Error
+### 10.7 Error
 - Inline field errors: border becomes `--bad`, a `caption`-scale message in `--bad` appears below the field with `4px` top margin.
 - Component/section-level errors (e.g. a table failed to load data): use the `alert-bad` treatment (Section 6.8) in place of the content, with a retry action (Secondary button) if applicable.
 
 ---
 
-## 10. Accessibility Requirements
+## 11. Accessibility Requirements
 
 - Color is never the sole carrier of meaning: every `good`/`bad`/`warn` semantic signal must be paired with a text label or icon glyph (badges already satisfy this by combining color with a word and/or ✓/✕ glyph — never ship a bare colored dot with no label as a status indicator).
 - Minimum contrast: body text against its background must meet WCAG AA (4.5:1) in both themes; the token values in Section 2 are chosen to satisfy this on their intended background pairings (e.g. `--text-secondary` on `--bg`/`--bg-raised`, not on `--bg-inset` if that combination fails contrast — verify before reusing a text token on a non-standard background).
-- All interactive elements must be reachable and operable via keyboard, with visible focus states per Section 9.2.
+- All interactive elements must be reachable and operable via keyboard, with visible focus states per Section 10.2.
 - Respect `prefers-reduced-motion` per Section 5.4.
 - Use semantic HTML elements (`<table>`, `<thead>`, `<button>`, `<label for>`, etc.) as the underlying structure regardless of visual styling; the visual system in this document must be implemented as a styling layer on top of correct semantics, not as a replacement for them.
 
 ---
 
-## 11. Explicit Non-Goals / Anti-Patterns
+## 12. Explicit Non-Goals / Anti-Patterns
 
 To prevent drift toward generic "AI-generated SaaS" defaults, the following are explicitly forbidden anywhere in the product unless this document is formally amended:
 
@@ -426,11 +506,15 @@ To prevent drift toward generic "AI-generated SaaS" defaults, the following are 
 - No manual dark/light toggle control (Section 1.3).
 - No serif display typeface anywhere (this system is sans + mono only).
 - No more than one Primary button visually competing for attention within the same view.
-- No introducing a new hue for a new "status" without mapping it to Section 12's decision rule first.
+- No introducing a new hue for a new "status" without mapping it to Section 13's decision rule first.
+- No `table-layout: auto`, JS-measured "fit content" column sizing, or CSS Grid standing in for the Comparison Table's column layout (Section 7.1) — `table-layout: fixed` with Section 6.3's algorithm is the only permitted technique.
+- No `auto-fit`/`auto-fill`/`minmax()` responsive card grids (Section 7.1.1) — card-grid column counts come only from Section 4.2's fixed breakpoints.
+- No multi-line `-webkit-line-clamp` truncation anywhere (Section 7.3) — single-line ellipsis truncation or unconstrained height only.
+- No hiding or `display: none`-ing core comparison data (prices, specs, statuses) at any breakpoint to solve a space problem (Section 7.4) — reflow or scroll instead.
 
 ---
 
-## 12. Decision Rules for Undefined Cases
+## 13. Decision Rules for Undefined Cases
 
 When a screen or component is requested that this document does not explicitly cover, resolve it in this order:
 
@@ -440,9 +524,10 @@ When a screen or component is requested that this document does not explicitly c
 4. **Apply the data-typography rule automatically.** Any newly introduced field that is a comparable quantitative fact must use mono typography and, if a "best in column" designation makes sense for it, the best-value color/weight treatment from Section 6.3 — even if that specific field (e.g. "GitHub stars," "bundle size in KB," "last commit date") is not named anywhere in this document.
 5. **Default to the plainest composition.** If two valid layouts could satisfy a new request (e.g. cards vs. table for a given dataset), prefer whichever is denser and more scannable, consistent with Section 1.2's priority on data legibility — tabular/list-like data defaults to the Comparison Table; single-entity deep-dives default to Spec Cards or a full detail page built from the same primitives (raised surface, section heads, spec-list rows).
 6. **If genuinely novel** (no analogous component exists even functionally), construct it strictly from Section 5 primitives (surfaces, borders, spacing, radius scale, motion rules) and document the new pattern's rationale in a comment or accompanying note so it can be formally added to this spec later — do not silently introduce a one-off visual style that other pages won't be able to replicate.
+7. **Flag it, don't just decide it.** Whenever an implementation reaches this section at all — meaning no existing rule directly covered the case — leave a short, explicit note at the point of implementation (a code comment is sufficient; it does not need to be user-facing) stating what was undefined and which of rules 1–6 was used to resolve it. This applies equally to genuinely novel components (rule 6) and to any case elsewhere in this document that says to "flag" or "note" a conflict or gap (e.g. Section 7.6's conflict-resolution hierarchy, step 5). The note is what turns a one-off interpretation into something the next implementer — human or AI — can find, agree with or challenge, and eventually fold back into this document, rather than an invisible decision that only that implementation knows was ever made.
 
 ---
 
-## 13. Reference Implementation
+## 14. Reference Implementation
 
 A working HTML reference demonstrating every component in this document (hero, type scale, color tokens, buttons, badges, a comparison table with filter sidebar, spec cards, form fields, alerts) exists as `dexium-terminal-design-system.html`. Its content uses a services-comparison example purely as one illustration of the system — the same components apply directly to any other domain (dashboards, admin panels, developer tools, etc.) by swapping in that project's real content. That file is illustrative; **this markdown document is authoritative**. Where the two ever disagree due to future edits of one but not the other, this document governs, and the reference HTML should be updated to match — not the reverse. Note that the reference HTML predates the no-manual-toggle rule in Section 1.3 and included a manual dark/light switch for demonstration purposes only; any new implementation must omit that control per Section 1.3.
