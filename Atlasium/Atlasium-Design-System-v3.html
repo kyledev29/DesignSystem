@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlasium Design System — Overview</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ═══════════════════════════════════════════════════
+   ATLASIUM DESIGN SYSTEM
+   A shared visual language for product, marketing and
+   dashboard UI — consistent tokens, flexible implementation.
+═══════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; transition: background .2s, color .2s; line-height: 1.5; }
+
+/* ── DARK MODE (default) ── */
+:root {
+  --bg:          #0D1117;
+  --surface:     #131C27;
+  --surface-alt: #1C2A3A;
+  --border:      #243347;
+  --accent:      #2DD4BF;
+  --accent-dim:  #14B8A6;
+  --indigo:      #6366F1;
+  --fg:          #F0EDFF;
+  --fg-muted:    #8A9BBB;
+  --fg-dim:      #4A5A72;
+  --success:     #22D3A4;
+  --warning:     #F59E0B;
+  --danger:      #F87171;
+  --premium:     #A78BFA;
+  --info:        #60A5FA;
+  --gradient:    linear-gradient(90deg, #2DD4BF 0%, #6366F1 100%);
+}
+
+[data-theme="light"] {
+  --bg:          #F5F7FA;
+  --surface:     #FFFFFF;
+  --surface-alt: #EEF2F7;
+  --border:      #DDE3ED;
+  --accent:      #0D9488;
+  --accent-dim:  #0F766E;
+  --indigo:      #4F46E5;
+  --fg:          #0F172A;
+  --fg-muted:    #475569;
+  --fg-dim:      #94A3B8;
+  --success:     #059669;
+  --warning:     #D97706;
+  --danger:      #DC2626;
+  --premium:     #7C3AED;
+  --info:        #2563EB;
+  --gradient:    linear-gradient(90deg, #0D9488 0%, #4F46E5 100%);
+}
+
+body { background: var(--bg); color: var(--fg); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── UTILITY CLASSES ── */
+.surface     { background: var(--surface); }
+.surface-alt { background: var(--surface-alt); }
+.border-c    { border-color: var(--border); }
+.text-fg     { color: var(--fg); }
+.text-muted  { color: var(--fg-muted); }
+.text-dim    { color: var(--fg-dim); }
+.text-accent { color: var(--accent); }
+.gradient    { background: var(--gradient); }
+.gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+/* ── BUTTONS ── */
+.btn { border: none; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 8px; transition: all .15s; display: inline-flex; align-items: center; gap: 6px; }
+.btn-sm  { font-size: 12px; padding: 5px 12px; }
+.btn-md  { font-size: 13px; padding: 8px 16px; }
+.btn-lg  { font-size: 14px; padding: 10px 22px; }
+.btn-primary   { background: var(--gradient); color: #fff; font-weight: 600; }
+.btn-primary:hover { opacity: .88; }
+.btn-secondary { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: color-mix(in srgb, var(--accent) 50%, transparent); background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.btn-ghost     { background: transparent; color: var(--fg-muted); }
+.btn-ghost:hover { color: var(--fg); background: var(--surface-alt); }
+.btn-danger    { background: transparent; color: var(--danger); border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent); }
+.btn-danger:hover { background: color-mix(in srgb, var(--danger) 10%, transparent); }
+.btn-accent    { background: transparent; color: var(--premium); border: 1px solid color-mix(in srgb, var(--premium) 40%, transparent); }
+.btn-accent:hover { background: color-mix(in srgb, var(--premium) 10%, transparent); }
+
+/* ── BADGES ── */
+.badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 999px; display: inline-block; }
+.badge-success  { background: color-mix(in srgb, var(--success) 12%, transparent); color: var(--success);  border: 1px solid color-mix(in srgb, var(--success) 30%, transparent); }
+.badge-danger   { background: color-mix(in srgb, var(--danger)  12%, transparent); color: var(--danger);   border: 1px solid color-mix(in srgb, var(--danger)  30%, transparent); }
+.badge-warning  { background: color-mix(in srgb, var(--warning) 12%, transparent); color: var(--warning);  border: 1px solid color-mix(in srgb, var(--warning) 30%, transparent); }
+.badge-accent   { background: color-mix(in srgb, var(--accent)  10%, transparent); color: var(--accent);   border: 1px solid color-mix(in srgb, var(--accent)  25%, transparent); }
+.badge-premium  { background: color-mix(in srgb, var(--premium) 12%, transparent); color: var(--premium);  border: 1px solid color-mix(in srgb, var(--premium) 30%, transparent); }
+.badge-info     { background: color-mix(in srgb, var(--info)    12%, transparent); color: var(--info);     border: 1px solid color-mix(in srgb, var(--info)    30%, transparent); }
+.badge-neutral  { background: color-mix(in srgb, var(--fg-muted) 10%, transparent); color: var(--fg-muted); border: 1px solid var(--border); }
+
+/* Inline label (square, DM Mono) */
+.label-inline { font-size: 10px; font-family: 'DM Mono', monospace; padding: 2px 7px; border-radius: 3px; display: inline-block; }
+.label-success { background: color-mix(in srgb, var(--success) 12%, transparent); color: var(--success); }
+.label-accent  { background: color-mix(in srgb, var(--accent)  10%, transparent); color: var(--accent);  }
+.label-warning { background: color-mix(in srgb, var(--warning) 12%, transparent); color: var(--warning); }
+.label-info    { background: color-mix(in srgb, var(--info)    12%, transparent); color: var(--info);    }
+
+/* ── CHIP / TAG ── */
+.chip { background: transparent; color: var(--fg-muted); border: 1px solid var(--border); border-radius: 999px; font-size: 12px; padding: 4px 12px; cursor: pointer; transition: all .15s; display: inline-block; }
+.chip:hover { border-color: color-mix(in srgb, var(--accent) 50%, transparent); color: var(--fg); }
+.chip.active { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+
+/* ── INPUT ── */
+.input { background: var(--bg); color: var(--fg); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-family: 'Inter', sans-serif; font-size: 13px; outline: none; transition: box-shadow .15s, border-color .15s; width: 100%; }
+.input:focus { border-color: color-mix(in srgb, var(--accent) 60%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); }
+.input::placeholder { color: var(--fg-dim); }
+.input-error { border-color: color-mix(in srgb, var(--danger) 60%, transparent) !important; }
+textarea.input { resize: vertical; min-height: 80px; font-family: 'Inter', sans-serif; }
+.select-wrap { position: relative; }
+.select-wrap select { appearance: none; -webkit-appearance: none; padding-right: 32px; cursor: pointer; }
+.select-wrap svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--fg-dim); }
+input[type="checkbox"], input[type="radio"], input[type="range"] { accent-color: var(--accent); }
+
+/* ── CARDS ── */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.card-body   { padding: 16px 20px; }
+.card-footer { padding: 12px 20px; border-top: 1px solid var(--border); background: color-mix(in srgb, var(--bg) 60%, transparent); }
+
+/* ── TABLE ── */
+.table-row { transition: background .12s; }
+.table-row:hover { background: var(--surface-alt); }
+.table-row.disabled { opacity: .65; }
+
+/* ── SKELETON ── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; opacity: 1; }
+  70%  { background-position:  600px 0; opacity: 1; }
+  71%  { opacity: 0; }
+  99%  { opacity: 0; background-position: -600px 0; }
+  100% { opacity: 1; background-position: -600px 0; }
+}
+.skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface-alt) 50%, var(--surface) 75%); background-size: 600px 100%; animation: shimmer 1.8s linear infinite; border-radius: 4px; }
+
+/* ── TOAST / ALERT ── */
+.toast { border-radius: 8px; padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px; font-size: 13px; border: 1px solid; }
+.toast-success { background: color-mix(in srgb, var(--success) 10%, transparent); color: var(--success);  border-color: color-mix(in srgb, var(--success) 25%, transparent); }
+.toast-danger  { background: color-mix(in srgb, var(--danger)  10%, transparent); color: var(--danger);   border-color: color-mix(in srgb, var(--danger)  25%, transparent); }
+.toast-warning { background: color-mix(in srgb, var(--warning) 10%, transparent); color: var(--warning);  border-color: color-mix(in srgb, var(--warning) 25%, transparent); }
+.toast-info    { background: color-mix(in srgb, var(--info)    10%, transparent); color: var(--info);     border-color: color-mix(in srgb, var(--info)    25%, transparent); }
+.banner { border-radius: 8px; padding: 10px 16px; display: flex; align-items: center; gap: 10px; font-size: 12px; border: 1px solid var(--border); background: var(--surface); }
+
+/* ── AVATAR ── */
+.avatar { border-radius: 50%; background: var(--surface-alt); border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-weight: 500; color: var(--fg-muted); overflow: hidden; flex-shrink: 0; }
+.avatar-sm { width: 24px; height: 24px; font-size: 10px; }
+.avatar-md { width: 36px; height: 36px; font-size: 13px; }
+.avatar-lg { width: 48px; height: 48px; font-size: 16px; }
+.avatar-group { display: flex; }
+.avatar-group .avatar { margin-left: -8px; border: 2px solid var(--surface); }
+.avatar-group .avatar:first-child { margin-left: 0; }
+
+/* ── PROGRESS & STEPPER ── */
+.progress { height: 6px; background: var(--surface-alt); border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+.progress-bar { height: 100%; border-radius: 999px; background: var(--accent); }
+.step-dot { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-family: 'DM Mono', monospace; border: 2px solid var(--border); color: var(--fg-dim); background: var(--surface); flex-shrink: 0; }
+.step-dot.done { border-color: var(--success); background: var(--surface); color: var(--success); }
+.step-dot.active { border-color: var(--accent); color: var(--accent); }
+.step-line { flex: 1; height: 2px; background: var(--border); }
+.step-line.done { background: var(--success); }
+
+/* ── NAVIGATION PATTERNS ── */
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--fg-muted); }
+.breadcrumb a { color: var(--fg-muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--fg); }
+.breadcrumb .sep { color: var(--fg-dim); }
+.breadcrumb .current { color: var(--fg); }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); }
+.tab { padding: 9px 4px; margin-right: 20px; font-size: 13px; color: var(--fg-muted); border-bottom: 2px solid transparent; cursor: pointer; transition: color .15s, border-color .15s; }
+.tab:hover { color: var(--fg); }
+.tab.active { color: var(--fg); border-color: var(--accent); font-weight: 500; }
+.pagination { display: flex; align-items: center; gap: 4px; }
+.page-btn { min-width: 28px; height: 28px; padding: 0 6px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-family: 'DM Mono', monospace; color: var(--fg-muted); cursor: pointer; transition: background .12s; }
+.page-btn:hover { background: var(--surface-alt); }
+.page-btn.active { background: var(--surface-alt); color: var(--fg); border: 1px solid var(--border); }
+
+/* ── SWITCH / TOGGLE ── */
+.switch { width: 36px; height: 20px; border-radius: 999px; background: var(--surface-alt); border: 1px solid var(--border); position: relative; cursor: pointer; flex-shrink: 0; transition: background .15s, border-color .15s; }
+.switch::after { content: ''; position: absolute; top: 1px; left: 1px; width: 16px; height: 16px; border-radius: 50%; background: var(--fg-dim); transition: left .15s, background .15s; }
+.switch.on { background: color-mix(in srgb, var(--accent) 25%, transparent); border-color: color-mix(in srgb, var(--accent) 60%, transparent); }
+.switch.on::after { left: 17px; background: var(--accent); }
+
+/* ── ACCORDION ── */
+.accordion-item { border-bottom: 1px solid var(--border); }
+.accordion-item:last-child { border-bottom: none; }
+.accordion-head { padding: 15px 2px; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--fg); }
+.accordion-body { padding: 0 2px 16px; font-size: 13px; color: var(--fg-muted); line-height: 1.65; max-width: 60ch; }
+
+/* ── TOOLTIP ── */
+.tooltip-wrap { position: relative; display: inline-block; }
+.tooltip-bubble { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--surface-alt); border: 1px solid var(--border); color: var(--fg); font-size: 11px; padding: 6px 10px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s; }
+.tooltip-wrap:hover .tooltip-bubble { opacity: 1; }
+
+/* ── HERO GRID BG ── */
+.hero-grid { background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 40px 40px; }
+
+/* ── ACCENT DIVIDER ── */
+.accent-divider::before { content:''; display:block; width:32px; height:2px; background: var(--gradient); border-radius:2px; margin-bottom:16px; }
+
+/* ── MONO ── */
+.mono { font-family: 'DM Mono', monospace; }
+
+/* ── MISC ── */
+.section-divider { border-top: 1px solid var(--border); }
+
+/* ── PAGE LAYOUT ── */
+.page-wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+
+/* ── NAV ── */
+nav { border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 50; }
+.nav-inner { max-width: 980px; margin: auto; padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; }
+
+/* ── DOC CHROME (documentation only — not part of the shipped kit) ── */
+.section { border-bottom: 1px solid var(--border); padding-bottom: 56px; margin-bottom: 56px; }
+.section:last-child { border-bottom: none; }
+.section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-dim); margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
+.section-label::after { content:''; flex:1; height:1px; background: var(--border); }
+.rule-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--fg-dim); line-height: 1.8; }
+.token-pill { font-family: 'DM Mono', monospace; font-size: 11px; background: var(--surface-alt); border: 1px solid var(--border); border-radius: 4px; padding: 1px 7px; color: var(--fg-muted); display: inline-block; }
+
+#theme-toggle { position: fixed; top: 16px; right: 16px; z-index: 100; }
+</style>
+</head>
+<body>
+
+<!-- Theme Toggle -->
+<div id="theme-toggle">
+  <button onclick="toggleTheme()" class="btn btn-secondary btn-sm">
+    <span id="theme-icon">☀️</span>
+    <span id="theme-label">Light mode</span>
+  </button>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div style="width:28px; height:28px; border-radius:6px; background:var(--gradient); display:flex; align-items:center; justify-content:center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <span style="font-weight:600; font-size:14px;">Atlasium Design System</span>
+      <span class="label-inline label-accent" style="font-size:9px;">v3.0</span>
+    </div>
+    <div style="display:flex; gap:6px;">
+      <a href="#colors"     style="font-size:12px; color:var(--fg-muted); text-decoration:none; padding:4px 10px; border-radius:6px; transition:background .15s;" onmouseover="this.style.background='var(--surface-alt)'" onmouseout="this.style.background='transparent'">Colors</a>
+      <a href="#typography" style="font-size:12px; color:var(--fg-muted); text-decoration:none; padding:4px 10px; border-radius:6px; transition:background .15s;" onmouseover="this.style.background='var(--surface-alt)'" onmouseout="this.style.background='transparent'">Typography</a>
+      <a href="#components" style="font-size:12px; color:var(--fg-muted); text-decoration:none; padding:4px 10px; border-radius:6px; transition:background .15s;" onmouseover="this.style.background='var(--surface-alt)'" onmouseout="this.style.background='transparent'">Components</a>
+      <a href="#patterns"   style="font-size:12px; color:var(--fg-muted); text-decoration:none; padding:4px 10px; border-radius:6px; transition:background .15s;" onmouseover="this.style.background='var(--surface-alt)'" onmouseout="this.style.background='transparent'">Patterns</a>
+      <a href="#extension"  style="font-size:12px; color:var(--fg-muted); text-decoration:none; padding:4px 10px; border-radius:6px; transition:background .15s;" onmouseover="this.style.background='var(--surface-alt)'" onmouseout="this.style.background='transparent'">Extend</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Header -->
+<div class="page-wrap" style="padding-top:48px; padding-bottom:32px;">
+  <div style="max-width:640px;">
+    <div class="accent-divider"></div>
+    <h1 style="font-size:32px; font-weight:700; line-height:1.2; margin-bottom:12px;">
+      Atlasium Design System<br>
+      <span class="gradient-text">Overview & extension guide</span>
+    </h1>
+    <p style="font-size:14px; color:var(--fg-muted); line-height:1.65; margin-bottom:20px;">
+      One set of color, type and component tokens for building consistent interfaces across marketing pages, dashboards and product UI. The rules below are strong defaults, not a cage — bend them with intention when the content calls for it.
+    </p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <span class="badge badge-accent">Inter + DM Mono</span>
+      <span class="badge badge-success">Dark + Light mode</span>
+      <span class="badge badge-info">CSS Variables</span>
+      <span class="badge badge-neutral">Built to extend</span>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrap" style="padding-bottom:80px;">
+
+<!-- ══════════════════════════════════════
+     §1 — PHILOSOPHY
+══════════════════════════════════════ -->
+<section class="section" id="philosophy">
+<div class="section-label">§1 — Philosophy: consistent, not rigid</div>
+
+<p style="font-size:13px; color:var(--fg-muted); line-height:1.7; max-width:640px; margin-bottom:24px;">
+  A design system earns trust by making the obvious choice easy and the right choice consistent — not by making every screen look identical. Split every rule below into two piles: what has to stay fixed for the whole product to feel like one thing, and what's free to change per page, per team, per feature.
+</p>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
+  <div class="card">
+    <div class="card-header">
+      <div style="font-size:13px; font-weight:600; color:var(--success); margin-bottom:4px;">✓ Foundation — keep consistent</div>
+      <div style="font-size:12px; color:var(--fg-muted);">What gives the system its identity</div>
+    </div>
+    <div class="card-body" style="font-size:13px; color:var(--fg-muted); line-height:2; font-family:'DM Mono', monospace; font-size:11px;">
+      — All CSS color tokens (--bg, --surface, --accent…)<br>
+      — Typefaces: Inter for UI · DM Mono for code, numbers, mono data<br>
+      — Teal→indigo gradient, used once per view<br>
+      — Badge formula: bg 12% · border 30% · text 100%<br>
+      — Border-radius scale: 2 · 4 · 8 · 12 · 16 · 999px<br>
+      — Elevation via surface layering, not box-shadow<br>
+      — No entrance animation beyond skeleton shimmer<br>
+      — No hardcoded hex colors
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div style="font-size:13px; font-weight:600; color:var(--accent); margin-bottom:4px;">✦ Flexible — adapt per product</div>
+      <div style="font-size:12px; color:var(--fg-muted);">What can flex to fit the context</div>
+    </div>
+    <div class="card-body" style="font-size:13px; color:var(--fg-muted); line-height:2; font-family:'DM Mono', monospace; font-size:11px;">
+      — Badge copy doesn't need to match one domain (Available → Active, etc.)<br>
+      — Card layout: add or drop header/body/footer freely<br>
+      — Semantic colors: use --success/danger/warning/info wherever they fit<br>
+      — Grid columns: shape them to the content, not a fixed 2fr 1fr 1fr<br>
+      — Hero sections don't require a search bar<br>
+      — Max-width can grow (960px → 1200px for a dashboard, full-bleed for landing)<br>
+      — Gradient text can appear on any heading, not only the hero<br>
+      — New components (modal, tabs, sidebar…) are welcome as long as they're built on tokens
+    </div>
+  </div>
+
+</div>
+
+<div class="rule-box" style="margin-top:16px;">
+  <span style="color:var(--accent);">Core rule:</span> tokens are the contract, implementation is free. As long as you reach for a CSS variable instead of a hardcoded hex, you're "inside" the system. Every new component only has to pass one test: does it work in both dark and light mode? If a documented rule ever blocks the best answer for real content, override it on purpose and leave a note explaining why — that makes a healthier system than one nobody dares to bend.
+</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     §2 — COLOR TOKENS
+══════════════════════════════════════ -->
+<section class="section" id="colors">
+<div class="section-label">§2 — Color Tokens</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-bottom:24px;">
+
+  <!-- Surfaces -->
+  <div>
+    <div style="font-size:11px; color:var(--fg-dim); font-family:'DM Mono',monospace; margin-bottom:14px; text-transform:uppercase; letter-spacing:.08em;">Surfaces & Borders</div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--bg); border:1px solid var(--border); flex-shrink:0;"></div>
+        <div>
+          <span class="token-pill">--bg</span>
+          <span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Page background · never place content directly on it</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--surface); border:1px solid var(--border); flex-shrink:0;"></div>
+        <div>
+          <span class="token-pill">--surface</span>
+          <span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Card, panel, modal</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--surface-alt); border:1px solid var(--border); flex-shrink:0;"></div>
+        <div>
+          <span class="token-pill">--surface-alt</span>
+          <span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Hover, raised, inner section</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--border); flex-shrink:0;"></div>
+        <div>
+          <span class="token-pill">--border</span>
+          <span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Dividers, outlines</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accents -->
+  <div>
+    <div style="font-size:11px; color:var(--fg-dim); font-family:'DM Mono',monospace; margin-bottom:14px; text-transform:uppercase; letter-spacing:.08em;">Brand & Accent</div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--accent); flex-shrink:0;"></div>
+        <div>
+          <span class="token-pill" style="color:var(--accent);">--accent</span>
+          <span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Teal · primary CTA, links, focus ring</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--indigo); flex-shrink:0;"></div>
+        <div>
+          <span class="token-pill">--indigo</span>
+          <span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Indigo · gradient endpoint, pairs with accent</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--gradient); flex-shrink:0;"></div>
+        <div>
+          <span class="token-pill" style="color:var(--accent);">--gradient</span>
+          <span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">⚠ Teal→Indigo · use once per view</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--premium); flex-shrink:0;"></div>
+        <div>
+          <span class="token-pill">--premium</span>
+          <span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Purple · top tier, special highlight</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Text -->
+  <div>
+    <div style="font-size:11px; color:var(--fg-dim); font-family:'DM Mono',monospace; margin-bottom:14px; text-transform:uppercase; letter-spacing:.08em;">Text Hierarchy</div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--fg); flex-shrink:0;"></div>
+        <div><span class="token-pill">--fg</span><span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Primary text (lavender-white)</span></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--fg-muted); flex-shrink:0;"></div>
+        <div><span class="token-pill">--fg-muted</span><span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Secondary text, labels, descriptions</span></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--fg-dim); flex-shrink:0;"></div>
+        <div><span class="token-pill">--fg-dim</span><span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Tertiary text, disabled, placeholder</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Semantic -->
+  <div>
+    <div style="font-size:11px; color:var(--fg-dim); font-family:'DM Mono',monospace; margin-bottom:14px; text-transform:uppercase; letter-spacing:.08em;">Semantic States</div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--success); flex-shrink:0;"></div>
+        <div><span class="token-pill">--success</span><span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Green · success, available, cheapest</span></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--warning); flex-shrink:0;"></div>
+        <div><span class="token-pill">--warning</span><span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Amber · warning, sale, expiring</span></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--danger); flex-shrink:0;"></div>
+        <div><span class="token-pill">--danger</span><span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Red · error, taken, delete</span></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:28px; border-radius:6px; background:var(--info); flex-shrink:0;"></div>
+        <div><span class="token-pill">--info</span><span style="font-size:11px; color:var(--fg-dim); margin-left:8px;">Blue · informational, secondary detail</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="rule-box">
+  <span style="color:var(--accent);">color-mix() pattern:</span> Tint bg = <span style="color:var(--fg);">color-mix(in srgb, var(--TOKEN) 12%, transparent)</span> · Tint border = 30% · Text = 100%. This formula applies to every badge, toast and tag.<br>
+  <span style="color:var(--accent);">Extending colors:</span> add a new token (e.g. <span style="color:var(--fg);">--brand-custom</span>) but define it in both :root and [data-theme="light"].
+</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     §3 — TYPOGRAPHY
+══════════════════════════════════════ -->
+<section class="section" id="typography">
+<div class="section-label">§3 — Typography Scale</div>
+
+<div style="display:flex; flex-direction:column; gap:0;">
+
+  <div style="display:grid; grid-template-columns:130px 1fr; padding:20px 0; border-bottom:1px solid var(--border); gap:24px; align-items:start;">
+    <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--fg-dim);">Display / Hero<br><span style="color:var(--fg-dim);">Inter 700 · 32px</span></div>
+    <div>
+      <div style="font-size:32px; font-weight:700; line-height:1.2; color:var(--fg);">A headline,<br><span class="gradient-text">with one idea in focus.</span></div>
+      <div style="font-size:11px; color:var(--fg-dim); font-family:'DM Mono',monospace; margin-top:8px;">Gradient text is for ONE phrase per view · never a single word</div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:130px 1fr; padding:20px 0; border-bottom:1px solid var(--border); gap:24px; align-items:start;">
+    <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--fg-dim);">H1 — Page<br><span style="color:var(--fg-dim);">Inter 600 · 22px</span></div>
+    <div>
+      <div style="font-size:22px; font-weight:600; color:var(--fg);">Page name or the primary section title</div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:130px 1fr; padding:20px 0; border-bottom:1px solid var(--border); gap:24px; align-items:start;">
+    <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--fg-dim);">H2 — Section<br><span style="color:var(--fg-dim);">Inter 600 · 17px</span></div>
+    <div>
+      <div style="font-size:17px; font-weight:600; color:var(--fg);">Heading for a group of content</div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:130px 1fr; padding:20px 0; border-bottom:1px solid var(--border); gap:24px; align-items:start;">
+    <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--fg-dim);">H3 — Card/Group<br><span style="color:var(--fg-dim);">Inter 500 · 14px</span></div>
+    <div>
+      <div style="font-size:14px; font-weight:500; color:var(--fg);">Card, dropdown or panel title</div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:130px 1fr; padding:20px 0; border-bottom:1px solid var(--border); gap:24px; align-items:start;">
+    <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--fg-dim);">Body<br><span style="color:var(--fg-dim);">Inter 400 · 13px</span></div>
+    <div>
+      <div style="font-size:13px; color:var(--fg-muted); line-height:1.65; max-width:480px;">This is a regular paragraph. It uses fg-muted rather than fg so it sits a step below headings in the hierarchy. Keep the line width around 65 characters for easy reading.</div>
+      <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--fg-dim); margin-top:6px;">max-width ~65ch · line-height 1.65 · color: var(--fg-muted)</div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:130px 1fr; padding:20px 0; border-bottom:1px solid var(--border); gap:24px; align-items:start;">
+    <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--fg-dim);">Mono / Code / Data<br><span style="color:var(--fg-dim);">DM Mono 400-500</span></div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div style="font-family:'DM Mono',monospace; font-size:18px; font-weight:500;">myproject<span style="color:var(--accent);">.io</span></div>
+      <div style="font-family:'DM Mono',monospace; font-size:22px; font-weight:500;">$12.99 <span style="font-size:13px; color:var(--fg-dim); text-decoration:line-through;">$18.00</span></div>
+      <div style="font-family:'DM Mono',monospace; font-size:12px; background:var(--surface-alt); border:1px solid var(--border); padding:8px 12px; border-radius:6px; color:var(--fg-muted);">const result = await fetch('/api/v1/data');</div>
+      <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--fg-dim);">DM Mono: domain names · prices · timestamps · code · IDs · stats</div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:130px 1fr; padding:20px 0; gap:24px; align-items:start;">
+    <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--fg-dim);">Meta / Label<br><span style="color:var(--fg-dim);">Inter 400 · 11px</span></div>
+    <div>
+      <div style="font-size:11px; color:var(--fg-dim);">Updated 3 minutes ago · 12 data sources</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="rule-box" style="margin-top:16px;">
+  <span style="color:var(--accent);">Type rule:</span> Inter for all UI text · DM Mono for anything "technical" — numbers, code, IDs, timestamps, domains.<br>
+  <span style="color:var(--accent);">Avoid:</span> all-caps UI labels · line lengths past 65ch with no max-width · gradient text on a single word.
+</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     §4 — COMPONENTS
+══════════════════════════════════════ -->
+<section class="section" id="components">
+<div class="section-label">§4 — Components</div>
+
+<!-- 4A: Buttons -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">4A — Buttons</div>
+  <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center;">
+    <button class="btn btn-primary btn-lg">Primary</button>
+    <button class="btn btn-primary btn-md">Primary</button>
+    <button class="btn btn-primary btn-sm">Primary</button>
+    <button class="btn btn-secondary btn-md">Secondary</button>
+    <button class="btn btn-ghost btn-md">Ghost</button>
+    <button class="btn btn-danger btn-md">Danger</button>
+    <button class="btn btn-accent btn-md">Premium</button>
+  </div>
+  <div class="rule-box">
+    <span style="color:var(--accent);">btn-primary:</span> gradient background · white text · for the primary CTA. Keep at most 2 primary buttons per view.<br>
+    <span style="color:var(--accent);">btn-secondary:</span> transparent + border · hover tints the accent lightly · for secondary actions.<br>
+    <span style="color:var(--accent);">btn-ghost:</span> no border, no background · use inside card footers or toolbars only.<br>
+    <span style="color:var(--accent);">Sizes:</span> btn-sm (12px · 5/12) · btn-md (13px · 8/16) · btn-lg (14px · 10/22).<br>
+    <span style="color:var(--danger);">✗</span> Skip 999px border-radius on buttons — that's reserved for badges and chips.
+  </div>
+</div>
+
+<!-- 4B: Badges -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">4B — Badges & Labels</div>
+  <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:flex-start; margin-bottom:12px;">
+    <div style="text-align:center;">
+      <span class="badge badge-success">Success</span>
+      <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--fg-dim); margin-top:5px;">badge-success</div>
+    </div>
+    <div style="text-align:center;">
+      <span class="badge badge-danger">Danger</span>
+      <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--fg-dim); margin-top:5px;">badge-danger</div>
+    </div>
+    <div style="text-align:center;">
+      <span class="badge badge-warning">Warning</span>
+      <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--fg-dim); margin-top:5px;">badge-warning</div>
+    </div>
+    <div style="text-align:center;">
+      <span class="badge badge-accent">New</span>
+      <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--fg-dim); margin-top:5px;">badge-accent</div>
+    </div>
+    <div style="text-align:center;">
+      <span class="badge badge-premium">Premium</span>
+      <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--fg-dim); margin-top:5px;">badge-premium</div>
+    </div>
+    <div style="text-align:center;">
+      <span class="badge badge-info">Info</span>
+      <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--fg-dim); margin-top:5px;">badge-info</div>
+    </div>
+    <div style="text-align:center;">
+      <span class="badge badge-neutral">Neutral</span>
+      <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--fg-dim); margin-top:5px;">badge-neutral</div>
+    </div>
+    <div style="text-align:center; margin-left:16px;">
+      <span class="label-inline label-success">Cheapest</span>
+      <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--fg-dim); margin-top:5px;">label-success</div>
+    </div>
+    <div style="text-align:center;">
+      <span class="label-inline label-accent">At cost</span>
+      <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--fg-dim); margin-top:5px;">label-accent</div>
+    </div>
+    <div style="text-align:center;">
+      <span class="label-inline label-warning">Sale</span>
+      <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--fg-dim); margin-top:5px;">label-warning</div>
+    </div>
+    <div style="text-align:center;">
+      <span class="label-inline label-info">Beta</span>
+      <div style="font-family:'DM Mono',monospace; font-size:9px; color:var(--fg-dim); margin-top:5px;">label-info</div>
+    </div>
+  </div>
+  <div class="rule-box">
+    <span style="color:var(--accent);">Badge:</span> 999px border-radius · padding 3/10 · font-size 11px.<br>
+    <span style="color:var(--accent);">Inline label:</span> 3px border-radius · DM Mono · font-size 10px · use inside table rows or next to a name.<br>
+    <span style="color:var(--accent);">Formula:</span> bg = TOKEN 12% · border = TOKEN 30% · text = TOKEN 100% — all via color-mix().
+  </div>
+</div>
+
+<!-- 4C: Chips -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">4C — Chips / Filters / Tags</div>
+  <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+    <span class="chip">All</span>
+    <span class="chip active">Active</span>
+    <span class="chip">Paused</span>
+    <span class="chip">Ended</span>
+    <span class="chip">JavaScript</span>
+    <span class="chip">React</span>
+    <span class="chip">TypeScript</span>
+  </div>
+  <div class="rule-box">
+    <span style="color:var(--accent);">Chip:</span> 999px radius · padding 4/12 · for filters, tags, multi-select.<br>
+    <span style="color:var(--accent);">.active state:</span> teal tint 15% bg + teal border + teal text.
+  </div>
+</div>
+
+<!-- 4D: Form Controls -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">4D — Form Controls</div>
+  <div style="max-width:420px; display:flex; flex-direction:column; gap:12px; margin-bottom:12px;">
+    <input class="input" type="text" placeholder="Placeholder text..." />
+    <input class="input input-error" type="text" value="Invalid value" />
+    <div style="font-size:11px; color:var(--danger); margin-top:-4px;">This field can't be empty.</div>
+    <div style="background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:2px 14px 2px 10px; display:flex; align-items:center; gap:10px;">
+      <svg style="width:14px; height:14px; color:var(--fg-dim); flex-shrink:0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input style="flex:1; background:transparent; border:none; outline:none; font-family:'DM Mono',monospace; font-size:13px; color:var(--fg); padding:8px 0;" placeholder="Search..." />
+      <button class="btn btn-primary btn-sm" style="border:none;">Search</button>
+    </div>
+    <div class="select-wrap">
+      <select class="input">
+        <option>Choose an option</option>
+        <option>Newest first</option>
+        <option>Oldest first</option>
+      </select>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <textarea class="input" rows="3" placeholder="Longer notes go here..."></textarea>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top:2px;">
+      <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--fg-muted); cursor:pointer;"><input type="checkbox" checked /> I agree to the terms of service</label>
+      <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--fg-muted); cursor:pointer;"><input type="radio" name="demo-radio" checked /> Monthly billing</label>
+      <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--fg-muted); cursor:pointer;"><input type="radio" name="demo-radio" /> Annual billing</label>
+      <label style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--fg-muted); cursor:pointer;"><span class="switch"></span> SMS notifications</label>
+      <label style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--fg-muted); cursor:pointer;"><span class="switch on"></span> Two-factor authentication</label>
+    </div>
+  </div>
+  <div class="rule-box">
+    <span style="color:var(--accent);">Focus ring:</span> border → accent 60% · box-shadow → accent 15% spread 3px.<br>
+    <span style="color:var(--accent);">Search composite:</span> wrap it in its own container, keep the input background transparent.<br>
+    <span style="color:var(--accent);">Error state:</span> .input-error + a message in var(--danger) · font-size 11px underneath.<br>
+    <span style="color:var(--accent);">Checkbox / radio / switch:</span> native inputs with accent-color: var(--accent) — no custom markup needed, and it keeps full keyboard and screen-reader support.
+  </div>
+</div>
+
+<!-- 4E: Cards -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">4E — Cards</div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+
+    <!-- Basic card -->
+    <div class="card">
+      <div class="card-header" style="display:flex; align-items:center; justify-content:space-between;">
+        <div style="font-size:14px; font-weight:500;">Basic card</div>
+        <span class="badge badge-success">Active</span>
+      </div>
+      <div class="card-body">
+        <div style="font-size:13px; color:var(--fg-muted);">Card content. Header / body / footer are the three main zones.</div>
+      </div>
+      <div class="card-footer" style="display:flex; justify-content:flex-end; gap:8px;">
+        <button class="btn btn-ghost btn-sm" style="border:none;">Cancel</button>
+        <button class="btn btn-primary btn-sm" style="border:none;">Confirm</button>
+      </div>
+    </div>
+
+    <!-- Item card with skeleton -->
+    <div class="card">
+      <div class="card-header">
+        <div style="font-size:14px; font-weight:500;">Loading…</div>
+      </div>
+      <div class="card-body" style="display:flex; flex-direction:column; gap:10px;">
+        <div class="skeleton" style="height:12px; width:80%;"></div>
+        <div class="skeleton" style="height:12px; width:60%;"></div>
+        <div class="skeleton" style="height:12px; width:90%;"></div>
+        <div style="display:flex; gap:8px; margin-top:4px;">
+          <div class="skeleton" style="height:22px; width:70px; border-radius:999px;"></div>
+          <div class="skeleton" style="height:22px; width:60px; border-radius:999px;"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Stat cards -->
+  <div style="font-size:11px; color:var(--fg-dim); font-family:'DM Mono',monospace; margin-bottom:10px; text-transform:uppercase; letter-spacing:.06em;">Stat cards — three valid compositions</div>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:12px;">
+
+    <!-- Stat card: positive trend -->
+    <div class="card">
+      <div class="card-body">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+          <div style="width:30px; height:30px; border-radius:8px; background:color-mix(in srgb, var(--accent) 12%, transparent); display:flex; align-items:center; justify-content:center;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <span class="badge badge-success" style="display:inline-flex; align-items:center; gap:3px;">↑ 8.3%</span>
+        </div>
+        <div style="font-size:11px; color:var(--fg-dim); margin-bottom:4px;">Total users</div>
+        <div style="font-family:'DM Mono',monospace; font-size:26px; font-weight:500; color:var(--fg);">12,847</div>
+        <div style="font-size:11px; color:var(--fg-dim); margin-top:4px;">vs. previous 30 days</div>
+      </div>
+    </div>
+
+    <!-- Stat card: negative trend -->
+    <div class="card">
+      <div class="card-body">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+          <div style="width:30px; height:30px; border-radius:8px; background:color-mix(in srgb, var(--indigo) 14%, transparent); display:flex; align-items:center; justify-content:center;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--indigo)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <span class="badge badge-danger" style="display:inline-flex; align-items:center; gap:3px;">↓ 3.1%</span>
+        </div>
+        <div style="font-size:11px; color:var(--fg-dim); margin-bottom:4px;">Monthly revenue</div>
+        <div style="font-family:'DM Mono',monospace; font-size:26px; font-weight:500; color:var(--fg);">$48,210</div>
+        <div style="font-size:11px; color:var(--fg-dim); margin-top:4px;">vs. previous 30 days</div>
+      </div>
+    </div>
+
+    <!-- Stat card: no trend, gauge instead -->
+    <div class="card">
+      <div class="card-body">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+          <div style="width:30px; height:30px; border-radius:8px; background:color-mix(in srgb, var(--warning) 12%, transparent); display:flex; align-items:center; justify-content:center;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          </div>
+          <span class="badge badge-neutral">68%</span>
+        </div>
+        <div style="font-size:11px; color:var(--fg-dim); margin-bottom:4px;">Storage used</div>
+        <div style="font-family:'DM Mono',monospace; font-size:26px; font-weight:500; color:var(--fg);">341 GB <span style="font-size:13px; color:var(--fg-dim);">/ 500 GB</span></div>
+        <div class="progress" style="margin-top:10px;"><div class="progress-bar" style="width:68%; background:var(--warning);"></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="rule-box">
+    <span style="color:var(--accent);">Card anatomy:</span> .card → .card-header (border-bottom) → .card-body → .card-footer (border-top, translucent bg). Drop the header or footer when content doesn't need them.<br>
+    <span style="color:var(--accent);">Stat card anatomy:</span> optional icon chip (12–14% tint of a semantic or brand token) → label in fg-dim, 11px → value in DM Mono, 26–28px → then exactly one closing element: a trend badge, a supporting caption, or a thin .progress bar. Stacking more than one competes for attention.<br>
+    <span style="color:var(--accent);">Works for:</span> any single-number metric — users, revenue, latency, error rate, storage, conversion. The icon and closing element are what tell metrics apart, not a new layout for each one.<br>
+    <span style="color:var(--danger);">✗</span> Don't place content directly on --bg — always wrap it in .card or another surface.
+  </div>
+</div>
+
+<!-- 4F: Toasts -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">4F — Toasts, Banners & Alerts</div>
+  <div style="display:flex; flex-direction:column; gap:8px; max-width:480px; margin-bottom:12px;">
+    <div class="toast toast-success">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <div><strong>Saved.</strong> Your changes are live.</div>
+    </div>
+    <div class="toast toast-danger">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <div><strong>Something went wrong.</strong> Couldn't reach the server.</div>
+    </div>
+    <div class="toast toast-warning">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div><strong>Heads up:</strong> your session expires in 5 minutes.</div>
+    </div>
+    <div class="toast toast-info">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <div>A new feature just shipped. <a href="#" style="color:var(--info); text-decoration:underline;">Learn more</a></div>
+    </div>
+  </div>
+
+  <div style="font-size:11px; color:var(--fg-dim); margin-bottom:10px;">Banner — persistent, page-level</div>
+  <div class="banner" style="max-width:480px; margin-bottom:12px;">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--fg-muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    <div style="flex:1; color:var(--fg-muted);">You're on the free plan. <a href="#" style="color:var(--accent); text-decoration:underline;">Upgrade</a> for unlimited projects.</div>
+    <span style="color:var(--fg-dim); cursor:pointer; font-size:13px;">✕</span>
+  </div>
+
+  <div class="rule-box">
+    <span style="color:var(--accent);">Toast formula:</span> bg TOKEN 10% · border TOKEN 25% · text TOKEN 100% · icon matches the text color · border-radius 8px · padding 12/16.<br>
+    <span style="color:var(--accent);">Toast vs. banner:</span> a toast reports the result of an action and clears itself; a banner states an ongoing condition and stays until it's resolved or dismissed. Don't reach for a toast to say something that's still true five minutes later.
+  </div>
+</div>
+
+<!-- 4G: Table -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">4G — Data Table</div>
+  <div class="card" style="margin-bottom:12px;">
+    <!-- Header row -->
+    <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; padding:10px 18px; border-bottom:1px solid var(--border); font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--fg-dim);">
+      <div>Name</div><div>Status</div><div>Value</div><div style="text-align:right;">Actions</div>
+    </div>
+    <!-- Row: active -->
+    <div class="table-row" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; padding:12px 18px; align-items:center; border-bottom:1px solid var(--border);">
+      <div style="font-size:14px; font-weight:500;">Project Alpha</div>
+      <div><span class="badge badge-success">Active</span></div>
+      <div style="font-family:'DM Mono',monospace; font-size:13px;">1,240</div>
+      <div style="text-align:right;"><button class="btn btn-primary btn-sm" style="border:none;">View</button></div>
+    </div>
+    <!-- Row: warning -->
+    <div class="table-row" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; padding:12px 18px; align-items:center; border-bottom:1px solid var(--border);">
+      <div style="font-size:14px; font-weight:500;">Project Beta</div>
+      <div><span class="badge badge-warning">Pending</span></div>
+      <div style="font-family:'DM Mono',monospace; font-size:13px;">587</div>
+      <div style="text-align:right;"><button class="btn btn-secondary btn-sm">View</button></div>
+    </div>
+    <!-- Row: disabled -->
+    <div class="table-row disabled" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; padding:12px 18px; align-items:center; border-bottom:1px solid var(--border);">
+      <div style="font-size:14px; color:var(--fg-muted);">Project Gamma</div>
+      <div><span class="badge badge-danger">Inactive</span></div>
+      <div style="font-family:'DM Mono',monospace; font-size:13px; color:var(--fg-dim);">—</div>
+      <div style="text-align:right;"><button class="btn btn-secondary btn-sm">View</button></div>
+    </div>
+    <!-- Row: skeleton -->
+    <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; padding:12px 18px; align-items:center; gap:8px;">
+      <div class="skeleton" style="height:14px; width:120px;"></div>
+      <div class="skeleton" style="height:20px; width:65px; border-radius:999px;"></div>
+      <div class="skeleton" style="height:14px; width:50px;"></div>
+      <div style="text-align:right;"><div class="skeleton" style="height:26px; width:55px; border-radius:8px; margin-left:auto;"></div></div>
+    </div>
+  </div>
+  <div class="rule-box">
+    <span style="color:var(--accent);">Grid:</span> use CSS grid instead of an HTML table · columns flex to the content.<br>
+    <span style="color:var(--accent);">Disabled row:</span> opacity .65 · don't hide the action button.<br>
+    <span style="color:var(--accent);">Skeleton:</span> shown while data is fetching · match the real content's shape.
+  </div>
+</div>
+
+<!-- 4H: Navigation -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">4H — Navigation</div>
+  <div style="display:flex; flex-direction:column; gap:24px; margin-bottom:12px;">
+
+    <div>
+      <div style="font-size:11px; color:var(--fg-dim); margin-bottom:10px;">Breadcrumb</div>
+      <div class="breadcrumb">
+        <a href="#">Projects</a><span class="sep">/</span><a href="#">Atlasium</a><span class="sep">/</span><span class="current">Settings</span>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:11px; color:var(--fg-dim); margin-bottom:10px;">Tabs</div>
+      <div class="tabs">
+        <div class="tab active">Overview</div>
+        <div class="tab">Activity</div>
+        <div class="tab">Members</div>
+        <div class="tab">Settings</div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:11px; color:var(--fg-dim); margin-bottom:10px;">Pagination</div>
+      <div class="pagination">
+        <div class="page-btn">‹</div>
+        <div class="page-btn active">1</div>
+        <div class="page-btn">2</div>
+        <div class="page-btn">3</div>
+        <div class="page-btn" style="color:var(--fg-dim);">…</div>
+        <div class="page-btn">12</div>
+        <div class="page-btn">›</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="rule-box">
+    <span style="color:var(--accent);">Breadcrumb:</span> fg-muted links, fg-dim separators, current page in fg — and never a link.<br>
+    <span style="color:var(--accent);">Tabs:</span> 2px accent underline for the active tab · no background pill (that's what .chip is for).<br>
+    <span style="color:var(--accent);">Pagination:</span> square-ish 28px targets, DM Mono digits, current page gets a surface-alt fill.
+  </div>
+</div>
+
+<!-- 4I: Avatar & User -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">4I — Avatar & User</div>
+  <div style="display:flex; flex-wrap:wrap; gap:32px; align-items:center; margin-bottom:12px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="avatar avatar-sm">JD</div>
+      <div class="avatar avatar-md">JD</div>
+      <div class="avatar avatar-lg">JD</div>
+    </div>
+
+    <div class="avatar-group">
+      <div class="avatar avatar-md">AK</div>
+      <div class="avatar avatar-md">RL</div>
+      <div class="avatar avatar-md">MT</div>
+      <div class="avatar avatar-md" style="background:var(--surface); color:var(--fg-dim); font-size:11px;">+4</div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="avatar avatar-md">SC</div>
+      <div>
+        <div style="font-size:13px; font-weight:500;">Sofia Chen</div>
+        <div style="font-size:11px; color:var(--fg-dim);">sofia@atlasium.co</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule-box">
+    <span style="color:var(--accent);">Avatar:</span> initials in DM Mono on a surface-alt circle when there's no photo · sizes 24 / 36 / 48px.<br>
+    <span style="color:var(--accent);">Group:</span> −8px overlap with a 2px surface-colored ring so avatars read as separate on any background · cap the stack and show "+N" for the rest.
+  </div>
+</div>
+
+<!-- 4J: Progress & Steps -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">4J — Progress & Steps</div>
+  <div style="display:flex; flex-direction:column; gap:28px; max-width:480px; margin-bottom:12px;">
+    <div>
+      <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--fg-dim); margin-bottom:6px;"><span>Profile completeness</span><span>72%</span></div>
+      <div class="progress"><div class="progress-bar" style="width:72%;"></div></div>
+    </div>
+
+    <div style="display:flex; align-items:center;">
+      <div class="step-dot done">✓</div>
+      <div class="step-line done"></div>
+      <div class="step-dot active">2</div>
+      <div class="step-line"></div>
+      <div class="step-dot">3</div>
+      <div class="step-line"></div>
+      <div class="step-dot">4</div>
+    </div>
+  </div>
+  <div class="rule-box">
+    <span style="color:var(--accent);">Progress bar:</span> 6px, surface-alt track, accent fill by default — swap the fill color to match what the number means (warning near a limit, danger past it), the way the storage stat card in §4E does.<br>
+    <span style="color:var(--accent);">Stepper:</span> a done step keeps the same outlined-circle shape as the rest — just swap --border for --success on the ring, the number for a ✓, and fg-dim for --success on the text. The connector after it turns --success too. The active step gets an accent outline instead, so "in progress" and "done" never share a color, and future steps stay on --border.
+  </div>
+</div>
+
+<!-- 4K: Overlays & Feedback -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">4K — Overlays & Feedback</div>
+
+  <div style="margin-bottom:20px;">
+    <div style="font-size:11px; color:var(--fg-dim); margin-bottom:16px;">Tooltip (hover)</div>
+    <div class="tooltip-wrap">
+      <button class="btn btn-secondary btn-sm">Hover me</button>
+      <div class="tooltip-bubble">Extra context on hover</div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:20px;">
+    <div style="font-size:11px; color:var(--fg-dim); margin-bottom:12px;">Modal / dialog</div>
+    <div style="background:var(--surface-alt); border-radius:12px; padding:40px 24px; display:flex; justify-content:center;">
+      <div class="card" style="width:320px;">
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-size:14px; font-weight:600;">Delete project?</div>
+          <span style="color:var(--fg-dim); cursor:pointer;">✕</span>
+        </div>
+        <div class="card-body">
+          <div style="font-size:13px; color:var(--fg-muted); line-height:1.6;">This removes the project and every file inside it. There's no undo.</div>
+        </div>
+        <div class="card-footer" style="display:flex; justify-content:flex-end; gap:8px;">
+          <button class="btn btn-ghost btn-sm" style="border:none;">Cancel</button>
+          <button class="btn btn-danger btn-sm">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div style="font-size:11px; color:var(--fg-dim); margin-bottom:12px;">Empty state</div>
+    <div class="card" style="text-align:center; padding:44px 24px;">
+      <div style="width:40px; height:40px; border-radius:10px; background:var(--surface-alt); display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--fg-dim)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div style="font-size:14px; font-weight:500; margin-bottom:6px;">No conversations yet</div>
+      <div style="font-size:12px; color:var(--fg-muted); margin-bottom:16px;">Start one to see it show up here.</div>
+      <button class="btn btn-primary btn-sm" style="border:none;">New conversation</button>
+    </div>
+  </div>
+
+  <div class="rule-box" style="margin-top:16px;">
+    <span style="color:var(--accent);">Tooltip:</span> surface-alt bubble, 11px, for a short hint only — never the only place required information lives.<br>
+    <span style="color:var(--accent);">Modal:</span> a regular .card, centered, no drop shadow — the dimmed surrounding area (not a shadow) is what separates it from the page. Keep one primary and one ghost/secondary action in the footer.<br>
+    <span style="color:var(--accent);">Empty state:</span> icon chip + one line naming what's missing + one line saying what to do about it + a single primary action. Explain, don't apologize.
+  </div>
+</div>
+
+<!-- 4L: Accordion -->
+<div>
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">4L — Accordion / Disclosure</div>
+  <div style="max-width:560px; margin-bottom:12px;">
+    <div class="accordion-item">
+      <div class="accordion-head">
+        <span>What counts as a "view" for billing?</span>
+        <span style="color:var(--fg-dim);">+</span>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-head">
+        <span>Can I change plans mid-cycle?</span>
+        <span style="color:var(--fg-dim);">−</span>
+      </div>
+      <div class="accordion-body">Yes — the change applies immediately, and the next invoice is prorated for the days spent on each plan.</div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-head">
+        <span>Do you offer a discount for annual billing?</span>
+        <span style="color:var(--fg-dim);">+</span>
+      </div>
+    </div>
+  </div>
+  <div class="rule-box">
+    <span style="color:var(--accent);">Accordion:</span> border-bottom dividers instead of separate cards · an open item's body sits in fg-muted with a max-width for readability. Good for FAQs, docs, and settings groups with optional detail.
+  </div>
+</div>
+
+</section>
+
+<!-- ══════════════════════════════════════
+     §5 — PATTERNS & LAYOUT
+══════════════════════════════════════ -->
+<section class="section" id="patterns">
+<div class="section-label">§5 — Patterns & Layout</div>
+
+<!-- 5A: Hero -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">5A — Hero Section</div>
+  <div style="padding:52px 32px; text-align:center;">
+    <div style="max-width:520px; margin:0 auto;">
+      <span class="label-inline label-accent" style="margin-bottom:12px; display:inline-block;">✦ New</span>
+      <h1 style="font-size:30px; font-weight:700; color:var(--fg); margin-bottom:10px; line-height:1.2;">
+        Build your product,<br><span class="gradient-text">faster than before.</span>
+      </h1>
+      <p style="font-size:13px; color:var(--fg-muted); margin-bottom:24px; line-height:1.6;">A short line on the product's value. Two lines max, under 25 words.</p>
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <button class="btn btn-primary btn-lg" style="border:none;">Start for free</button>
+        <button class="btn btn-secondary btn-lg">Watch demo</button>
+      </div>
+    </div>
+  </div>
+  <div class="rule-box">
+    <span style="color:var(--accent);">Background:</span> place the hero directly on var(--bg) — skip the card/surface wrapper and the hero-grid overlay.<br>
+    <span style="color:var(--accent);">Gradient text:</span> one phrase in the heading · no other gradient in the same section.<br>
+    <span style="color:var(--accent);">Flexible:</span> a hero doesn't need a search bar — a CTA, a form, a video, or a product screenshot all work.<br>
+    <span style="color:var(--warning);">Exception:</span> the hero is the one place content sits directly on --bg without a surface wrapper.<br>
+    <span style="color:var(--warning);">Keep it quiet:</span> skip decorative shapes, particles or animated gradients unless the brand genuinely calls for them.
+  </div>
+</div>
+
+<!-- 5B: Spacing -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">5B — Spacing Scale</div>
+  <div style="display:flex; flex-direction:column; gap:10px; font-family:'DM Mono',monospace; font-size:11px; margin-bottom:12px;">
+    <div style="display:flex; align-items:center; gap:12px;"><div style="width:4px; height:4px; background:var(--accent); border-radius:1px;"></div><span style="color:var(--fg-dim); width:32px;">4px</span><span style="color:var(--fg-muted);">icon-gap · tight label pair</span></div>
+    <div style="display:flex; align-items:center; gap:12px;"><div style="width:8px; height:8px; background:var(--accent); border-radius:1px;"></div><span style="color:var(--fg-dim); width:32px;">8px</span><span style="color:var(--fg-muted);">inline gap · tag spacing</span></div>
+    <div style="display:flex; align-items:center; gap:12px;"><div style="width:12px; height:12px; background:var(--accent); border-radius:1px;"></div><span style="color:var(--fg-dim); width:32px;">12px</span><span style="color:var(--fg-muted);">card footer padding · compact rows</span></div>
+    <div style="display:flex; align-items:center; gap:12px;"><div style="width:16px; height:16px; background:var(--accent); border-radius:1px;"></div><span style="color:var(--fg-dim); width:32px;">16px</span><span style="color:var(--fg-muted);">card body standard padding</span></div>
+    <div style="display:flex; align-items:center; gap:12px;"><div style="width:20px; height:20px; background:var(--accent); border-radius:1px;"></div><span style="color:var(--fg-dim); width:32px;">20px</span><span style="color:var(--fg-muted);">card section · list padding horizontal</span></div>
+    <div style="display:flex; align-items:center; gap:12px;"><div style="width:24px; height:20px; background:var(--accent); border-radius:1px;"></div><span style="color:var(--fg-dim); width:32px;">24px</span><span style="color:var(--fg-muted);">section gap · side padding</span></div>
+    <div style="display:flex; align-items:center; gap:12px;"><div style="width:32px; height:20px; background:var(--accent); border-radius:1px;"></div><span style="color:var(--fg-dim); width:32px;">32px</span><span style="color:var(--fg-muted);">hero inner padding · between card groups</span></div>
+    <div style="display:flex; align-items:center; gap:12px;"><div style="width:48px; height:20px; background:var(--accent); border-radius:1px;"></div><span style="color:var(--fg-dim); width:32px;">48px</span><span style="color:var(--fg-muted);">hero top/bottom · between page sections</span></div>
+  </div>
+</div>
+
+<!-- 5C: Border radius -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">5C — Border Radius Scale</div>
+  <div style="display:flex; flex-wrap:wrap; gap:16px; font-family:'DM Mono',monospace; font-size:11px; margin-bottom:12px;">
+    <div style="text-align:center;"><div style="width:48px; height:28px; background:var(--surface-alt); border:1px solid var(--border); border-radius:2px; margin-bottom:6px;"></div><span style="color:var(--accent);">2px</span><div style="color:var(--fg-dim); font-size:9px;">inline tag</div></div>
+    <div style="text-align:center;"><div style="width:48px; height:28px; background:var(--surface-alt); border:1px solid var(--border); border-radius:4px; margin-bottom:6px;"></div><span style="color:var(--accent);">4px</span><div style="color:var(--fg-dim); font-size:9px;">skeleton · code</div></div>
+    <div style="text-align:center;"><div style="width:48px; height:28px; background:var(--surface-alt); border:1px solid var(--border); border-radius:8px; margin-bottom:6px;"></div><span style="color:var(--accent);">8px</span><div style="color:var(--fg-dim); font-size:9px;">buttons · inputs · toasts</div></div>
+    <div style="text-align:center;"><div style="width:48px; height:28px; background:var(--surface-alt); border:1px solid var(--border); border-radius:10px; margin-bottom:6px;"></div><span style="color:var(--accent);">10px</span><div style="color:var(--fg-dim); font-size:9px;">rule-box · info panels</div></div>
+    <div style="text-align:center;"><div style="width:48px; height:28px; background:var(--surface-alt); border:1px solid var(--border); border-radius:12px; margin-bottom:6px;"></div><span style="color:var(--accent);">12px</span><div style="color:var(--fg-dim); font-size:9px;">cards · tables</div></div>
+    <div style="text-align:center;"><div style="width:48px; height:28px; background:var(--surface-alt); border:1px solid var(--border); border-radius:16px; margin-bottom:6px;"></div><span style="color:var(--accent);">16px</span><div style="color:var(--fg-dim); font-size:9px;">hero · modals</div></div>
+    <div style="text-align:center;"><div style="width:48px; height:16px; background:var(--surface-alt); border:1px solid var(--border); border-radius:999px; margin-bottom:6px;"></div><span style="color:var(--accent);">999px</span><div style="color:var(--fg-dim); font-size:9px;">badges · chips ONLY</div></div>
+  </div>
+</div>
+
+<!-- 5D: Guidelines -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">5D — Guidelines, not decrees</div>
+  <p style="font-size:12px; color:var(--fg-muted); line-height:1.7; max-width:640px; margin-bottom:16px;">
+    These are the defaults that keep the product feeling like one thing. Reach for them first. If a specific screen genuinely needs something different, break the rule on purpose and note why — a documented exception is healthy; an accidental one is drift.
+  </p>
+  <div class="rule-box" style="line-height:2;">
+    <span style="color:var(--warning);">•</span> Reach for a CSS variable before a hardcoded hex — it's what keeps dark and light mode in sync automatically.<br>
+    <span style="color:var(--warning);">•</span> Save the gradient for one moment per view — scarcity is what makes it feel intentional.<br>
+    <span style="color:var(--warning);">•</span> Keep 999px border-radius for badges and chips; on a button it reads as a pill, not a call to action.<br>
+    <span style="color:var(--warning);">•</span> Build elevation with surface layering rather than box-shadow, to match the flat, layered feel of the rest of the kit.<br>
+    <span style="color:var(--warning);">•</span> Skip entrance and scroll animation — skeleton shimmer is the one motion in the system, so it stays legible as "loading" rather than decoration.<br>
+    <span style="color:var(--warning);">•</span> Wrap content in a surface before placing it on --bg, except for the hero, which is the deliberate exception.<br>
+    <span style="color:var(--warning);">•</span> Give badges a tinted background instead of a solid fill, so they stay legible in both themes.<br>
+    <span style="color:var(--warning);">•</span> Let a gradient wrap a full phrase in a heading, not a single word — an accented word reads as a typo more than emphasis.
+  </div>
+</div>
+
+<!-- 5E: Content sections -->
+<div style="margin-bottom:32px;">
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">5E — Marketing & Content Sections</div>
+
+  <div style="margin-bottom:24px;">
+    <div style="font-size:11px; color:var(--fg-dim); margin-bottom:12px;">Feature grid</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+      <div>
+        <div style="width:32px; height:32px; border-radius:8px; background:color-mix(in srgb, var(--accent) 12%, transparent); display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <div style="font-size:14px; font-weight:500; margin-bottom:4px;">Fast by default</div>
+        <div style="font-size:12px; color:var(--fg-muted); line-height:1.6;">No configuration needed to get sub-second loads out of the box.</div>
+      </div>
+      <div>
+        <div style="width:32px; height:32px; border-radius:8px; background:color-mix(in srgb, var(--indigo) 14%, transparent); display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--indigo)" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div style="font-size:14px; font-weight:500; margin-bottom:4px;">Private by design</div>
+        <div style="font-size:12px; color:var(--fg-muted); line-height:1.6;">Data stays encrypted at rest and in transit, always.</div>
+      </div>
+      <div>
+        <div style="width:32px; height:32px; border-radius:8px; background:color-mix(in srgb, var(--premium) 12%, transparent); display:flex; align-items:center; justify-content:center; margin-bottom:12px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--premium)" stroke-width="2"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+        </div>
+        <div style="font-size:14px; font-weight:500; margin-bottom:4px;">Built to extend</div>
+        <div style="font-size:12px; color:var(--fg-muted); line-height:1.6;">Every setting has an API — automate anything the UI can do.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:24px;">
+    <div style="font-size:11px; color:var(--fg-dim); margin-bottom:12px;">Testimonial / quote</div>
+    <div class="card" style="padding:28px 32px;">
+      <div style="font-size:16px; color:var(--fg); line-height:1.6; font-weight:400; margin-bottom:16px;">"We moved our whole dashboard onto this system in an afternoon — the tokens did most of the work for us."</div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="avatar avatar-sm">RK</div>
+        <div style="font-size:12px; color:var(--fg-muted);">Ravi Kapoor · Head of Product, Northline</div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div style="font-size:11px; color:var(--fg-dim); margin-bottom:12px;">CTA banner</div>
+    <div class="gradient" style="border-radius:16px; padding:32px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+      <div>
+        <div style="font-size:18px; font-weight:600; color:#fff; margin-bottom:4px;">Ready to bring this to your product?</div>
+        <div style="font-size:13px; color:rgba(255,255,255,.85);">No credit card required to start.</div>
+      </div>
+      <button class="btn btn-lg" style="background:#fff; color:var(--accent-dim); font-weight:600; border:none;">Get started</button>
+    </div>
+  </div>
+
+  <div class="rule-box" style="margin-top:16px;">
+    <span style="color:var(--accent);">Feature grid:</span> icon chip in a semantic or brand tint, one line of title, one line of support copy — resist a second paragraph.<br>
+    <span style="color:var(--accent);">Testimonial:</span> the quote carries real weight (16px, fg not fg-muted) since here it's the content, not a caption.<br>
+    <span style="color:var(--accent);">CTA banner:</span> the one place the full-strength .gradient fills a whole surface rather than text — treat it as an alternative use of the "once per view" gradient rule, not an addition to it.
+  </div>
+</div>
+
+<!-- 5F: App shell layouts -->
+<div>
+  <div style="font-size:12px; color:var(--fg-muted); font-family:'DM Mono',monospace; margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em;">5F — App Shell Layouts</div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:12px;">
+
+    <div>
+      <div style="font-size:11px; color:var(--fg-dim); margin-bottom:10px;">Sidebar + content</div>
+      <div style="display:flex; border:1px solid var(--border); border-radius:10px; overflow:hidden; height:140px;">
+        <div style="width:34%; background:var(--surface); border-right:1px solid var(--border); padding:12px;">
+          <div class="skeleton" style="height:8px; width:70%; margin-bottom:10px;"></div>
+          <div class="skeleton" style="height:8px; width:50%; margin-bottom:8px;"></div>
+          <div class="skeleton" style="height:8px; width:60%; margin-bottom:8px;"></div>
+          <div class="skeleton" style="height:8px; width:45%;"></div>
+        </div>
+        <div style="flex:1; background:var(--bg); padding:12px;">
+          <div class="skeleton" style="height:8px; width:40%; margin-bottom:12px;"></div>
+          <div class="skeleton" style="height:40px; width:100%; margin-bottom:8px; border-radius:8px;"></div>
+          <div class="skeleton" style="height:40px; width:100%; border-radius:8px;"></div>
+        </div>
+      </div>
+      <div style="font-size:11px; color:var(--fg-dim); font-family:'DM Mono',monospace; margin-top:8px;">Sidebar 280–320px fixed · content flexes</div>
+    </div>
+
+    <div>
+      <div style="font-size:11px; color:var(--fg-dim); margin-bottom:10px;">Topbar + content</div>
+      <div style="border:1px solid var(--border); border-radius:10px; overflow:hidden; height:140px;">
+        <div style="height:32px; border-bottom:1px solid var(--border); background:var(--surface); display:flex; align-items:center; padding:0 12px; gap:8px;">
+          <div class="skeleton" style="height:8px; width:18%;"></div>
+          <div style="flex:1;"></div>
+          <div class="skeleton" style="height:16px; width:16px; border-radius:50%;"></div>
+        </div>
+        <div style="padding:12px; background:var(--bg);">
+          <div class="skeleton" style="height:8px; width:30%; margin-bottom:12px;"></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+            <div class="skeleton" style="height:50px; border-radius:8px;"></div>
+            <div class="skeleton" style="height:50px; border-radius:8px;"></div>
+            <div class="skeleton" style="height:50px; border-radius:8px;"></div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:11px; color:var(--fg-dim); font-family:'DM Mono',monospace; margin-top:8px;">Topbar 52–64px fixed · content scrolls beneath</div>
+    </div>
+
+  </div>
+  <div class="rule-box">
+    <span style="color:var(--accent);">Pick one shell per product</span> — mixing a sidebar app with a topbar-only settings page in the same product reads as two different tools. A marketing site needs neither; build it from the §5E sections instead, inside a simple centered .page-wrap.
+  </div>
+</div>
+
+</section>
+
+<!-- ══════════════════════════════════════
+     §6 — EXTENSION GUIDE
+══════════════════════════════════════ -->
+<section id="extension">
+<div class="section-label">§6 — Extension Guide</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
+  <div class="card">
+    <div class="card-header">
+      <div style="font-size:13px; font-weight:600; margin-bottom:2px;">Add a new color token</div>
+      <div style="font-size:11px; color:var(--fg-muted);">Example: add your own brand color</div>
+    </div>
+    <div class="card-body">
+      <pre style="font-family:'DM Mono',monospace; font-size:11px; color:var(--fg-muted); line-height:1.7; overflow-x:auto;"><span style="color:var(--fg-dim);">/* Dark mode */</span>
+<span style="color:var(--accent);">:root</span> {
+  <span style="color:var(--fg);">--brand: #E879F9;</span>
+}
+<span style="color:var(--fg-dim);">/* Light mode */</span>
+<span style="color:var(--accent);">[data-theme="light"]</span> {
+  <span style="color:var(--fg);">--brand: #A21CAF;</span>
+}</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div style="font-size:13px; font-weight:600; margin-bottom:2px;">Add a new component</div>
+      <div style="font-size:11px; color:var(--fg-muted);">Example: tab navigation</div>
+    </div>
+    <div class="card-body">
+      <pre style="font-family:'DM Mono',monospace; font-size:11px; color:var(--fg-muted); line-height:1.7; overflow-x:auto;"><span style="color:var(--fg-dim);">/* Use the right tokens */</span>
+<span style="color:var(--accent);">.tab</span> {
+  color: <span style="color:var(--fg);">var(--fg-muted)</span>;
+  border-bottom: 2px solid
+    <span style="color:var(--fg);">transparent</span>;
+}
+<span style="color:var(--accent);">.tab.active</span> {
+  color: <span style="color:var(--fg);">var(--accent)</span>;
+  border-color: <span style="color:var(--fg);">var(--accent)</span>;
+}</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div style="font-size:13px; font-weight:600; margin-bottom:2px;">Semantic mapping</div>
+      <div style="font-size:11px; color:var(--fg-muted);">Rename badges per context</div>
+    </div>
+    <div class="card-body">
+      <div style="display:flex; flex-direction:column; gap:10px; font-size:12px; color:var(--fg-muted);">
+        <div style="display:flex; align-items:center; gap:8px;"><span class="badge badge-success">Available</span><span style="color:var(--fg-dim);">→</span><span class="badge badge-success">Active</span><span style="color:var(--fg-dim);">→</span><span class="badge badge-success">Published</span></div>
+        <div style="display:flex; align-items:center; gap:8px;"><span class="badge badge-danger">Taken</span><span style="color:var(--fg-dim);">→</span><span class="badge badge-danger">Error</span><span style="color:var(--fg-dim);">→</span><span class="badge badge-danger">Deleted</span></div>
+        <div style="display:flex; align-items:center; gap:8px;"><span class="badge badge-warning">Sale</span><span style="color:var(--fg-dim);">→</span><span class="badge badge-warning">Pending</span><span style="color:var(--fg-dim);">→</span><span class="badge badge-warning">Review</span></div>
+        <div style="font-size:11px; color:var(--fg-dim); font-family:'DM Mono',monospace; margin-top:4px;">Color stays the same · only the label text changes</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div style="font-size:13px; font-weight:600; margin-bottom:2px;">Extending layout</div>
+      <div style="font-size:11px; color:var(--fg-muted);">When you need more than 960px</div>
+    </div>
+    <div class="card-body">
+      <div style="font-size:12px; color:var(--fg-muted); line-height:1.8; font-family:'DM Mono',monospace; font-size:11px;">
+        — Content pages: max-width 960px<br>
+        — Dashboard / admin: max-width 1200px<br>
+        — Full-bleed landing: unconstrained<br>
+        — Side padding: 24px mobile · 32px desktop<br>
+        — Sidebar layout: content 1fr · sidebar 300–360px
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="grid-column: span 2;">
+    <div class="card-header">
+      <div style="font-size:13px; font-weight:600; margin-bottom:2px;">Knowing when to step outside the system</div>
+      <div style="font-size:11px; color:var(--fg-muted);">Consistency is a means, not the goal</div>
+    </div>
+    <div class="card-body" style="font-size:12px; color:var(--fg-muted); line-height:1.8;">
+      A one-off landing page, an experiment, or a piece of content that needs its own visual voice doesn't have to wear this system. Use it as the default for anything that lives inside the product — settings, dashboards, transactional pages — and treat it as optional for anything that exists to make a single, memorable impression. When you do deviate, keep the type and spacing scale as a quiet baseline; that's usually enough to still feel like the same company without forcing the same components.
+    </div>
+  </div>
+
+</div>
+
+</section>
+
+</div><!-- /page-wrap -->
+
+<!-- Footer -->
+<div style="border-top:1px solid var(--border); margin-top:48px;">
+  <div style="max-width:980px; margin:auto; padding:16px 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+    <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--fg-dim);">Atlasium Design System · v3.0 · Extended for marketing, dashboard and product UI</div>
+    <div style="font-family:'DM Mono',monospace; font-size:10px; color:var(--fg-dim);">Inter · DM Mono · CSS Custom Properties · Dark + Light mode</div>
+  </div>
+</div>
+
+<script>
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-icon').textContent = isDark ? '🌙' : '☀️';
+  document.getElementById('theme-label').textContent = isDark ? 'Dark mode' : 'Light mode';
+}
+</script>
+</body>
+</html>
